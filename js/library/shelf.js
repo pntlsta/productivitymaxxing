@@ -3,6 +3,7 @@
 import * as store from '../core/store.js';
 import { esc, uuid, lsGet, lsSet, loadEpub, plural } from '../core/util.js';
 import { idbPut, idbDel, blobUrl } from '../core/idb.js';
+import { listRepoBooks, fetchRepoBook } from './repobooks.js';
 import { icon } from '../core/icons.js';
 import { toast, confirmDialog, formDialog, contextMenu, emptyState, skeletonRows } from '../core/ui.js';
 
@@ -34,7 +35,7 @@ export async function deleteFolder(name) {
 }
 
 /** Parse an epub file, store blob + cover in IDB, create the db:book record. */
-export async function importEpub(file, folder = '') {
+export async function importEpub(file, folder = '', extra = {}) {
   if (!/\.epub$/i.test(file.name) && file.type !== 'application/epub+zip') throw new Error(`${file.name} is not an .epub file.`);
   const ePub = await loadEpub();
   const buf = await file.arrayBuffer();
@@ -51,7 +52,7 @@ export async function importEpub(file, folder = '') {
     await idbPut('books', id, new Blob([buf], { type: 'application/epub+zip' }));
     return store.create('book', {
       id, title: md.title || file.name.replace(/\.epub$/i, ''), author: md.creator || '', publisher: md.publisher || '',
-      language: md.language || '', folder, progress: 0, lastCfi: null, hasCover, fileName: file.name, size: file.size,
+      language: md.language || '', folder, progress: 0, lastCfi: null, hasCover, fileName: file.name, size: file.size, ...extra,
     });
   } finally { book.destroy(); }
 }
@@ -59,7 +60,7 @@ export async function importEpub(file, folder = '') {
 export async function removeBook(b) {
   const marks = store.where('bookmark', x => x.bookId === b.id), anns = store.where('annotation', x => x.bookId === b.id);
   const extra = marks.length + anns.length ? ` along with ${plural(marks.length, 'bookmark')} and ${plural(anns.length, 'highlight')}` : '';
-  if (!await confirmDialog({ title: 'Remove book?', message: `Remove "${b.title}"${extra}? The epub file is deleted from this browser; the record can be restored from Settings, but you would need to upload the file again.`, confirmText: 'Remove book' })) return false;
+  if (!await confirmDialog({ title: 'Remove book?', message: b.repoPath ? `Remove "${b.title}"${extra} from your library? The file stays in your repo's ${b.repoPath.split('/').slice(0, -1).join('/') || 'books'} folder, so it will be listed there again and you can re-add it.` : `Remove "${b.title}"${extra}? The epub file is deleted from this browser; the record can be restored from Settings, but you would need to upload the file again.`, confirmText: 'Remove book' })) return false;
   marks.forEach(m => store.remove('bookmark', m.id)); anns.forEach(a => store.remove('annotation', a.id));
   store.remove('book', b.id);
   await Promise.all([idbDel('books', b.id), idbDel('covers', b.id), idbDel('search', b.id), idbDel('locations', b.id)]).catch(() => {});
@@ -112,10 +113,45 @@ export function renderShelf(main, folder) {
           </a>
           <button class="icon-btn btn-sm book-more" data-more="${b.id}" aria-label="More actions for ${esc(b.title)}" aria-haspopup="menu">${icon('more')}</button>
         </li>`).join('')}</ul>`
-        : emptyState(folder != null ? 'This folder is empty' : 'Your library is empty', 'Drag .epub files here, or use Upload epub. Files stay in this browser; only titles and progress sync to GitHub.')}
+        : emptyState(folder != null ? 'This folder is empty' : 'Your library is empty', 'Add a book from your repo below, drag an .epub here, or use Upload epub. Uploaded files stay in this browser; books from the repo folder download on any device.')}
       <div class="drop-hint" aria-hidden="true">${icon('upload')} Drop to add to ${folder ? esc(folder) : 'library'}</div>
-    </div></div>`;
+    </div>
+    <section class="repo-books" id="repo-books" aria-labelledby="repo-h"></section></div>`;
   hydrateCovers(main);
+  renderRepoSection(main);
+}
+
+const titleFromFile = (n) => n.replace(/\.epub$/i, '').replace(/[_-]+/g, ' ').trim();
+/** Books in the repo folder that aren't in the library yet. */
+export async function renderRepoSection(main, force = false) {
+  const el = main.querySelector('#repo-books'); if (!el) return;
+  el.innerHTML = `<div class="row repo-head"><h2 id="repo-h" class="small muted">From your repo</h2><span class="spacer"></span></div><div class="skeleton skeleton-row"></div>`;
+  const { files, source, error } = await listRepoBooks(force);
+  if (!el.isConnected) return;
+  const known = new Set(store.all('book').map(b => b.repoPath).filter(Boolean));
+  const fresh = files.filter(f => !known.has(f.path));
+  const where = source.owner && source.repo ? `${source.owner}/${source.repo}/${source.path}` : `${source.path}/`;
+  el.innerHTML = `<div class="row repo-head"><h2 id="repo-h" class="small muted">From your repo · <code>${esc(where)}</code></h2><span class="spacer"></span>
+      <button class="btn btn-sm btn-ghost" data-repo-refresh>${icon('refresh')} Refresh</button></div>
+    ${error ? `<p class="small" style="color:var(--danger)" role="alert">${esc(error)}</p>` : ''}
+    ${fresh.length ? `<ul class="book-grid">${fresh.map((f, i) => `<li class="book-card repo-card">
+        <button class="book-link" data-repo-add="${i}" aria-label="Add ${esc(titleFromFile(f.name))} from the repo and open it">
+          <span class="cover"><span class="cover-fallback">${esc(titleFromFile(f.name))}</span></span>
+          <span class="book-title">${esc(titleFromFile(f.name))}</span><span class="book-author">${f.size ? `${f.size >= 1048576 ? (f.size / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(f.size / 1024)) + ' KB'} · ` : ''}Click to add</span>
+        </button></li>`).join('')}</ul>`
+      : `<p class="small muted">${files.length ? files.length === 1 ? 'The book in the repo folder is already in your library.' : `All ${files.length} books in the repo folder are in your library.` : !source.owner && !location.hostname.endsWith('github.io') ? `Not running on a github.io address, so the repo can't be detected. Set it under Settings → Repo books folder, or list file names in ${esc(source.path)}/manifest.json.` : `No .epub files found yet. On GitHub, open the repo, go into the ${esc(source.path)} folder, and use Add file → Upload files.`}</p>`}`;
+  el._files = fresh;
+}
+
+async function addFromRepo(file, folder) {
+  const t = toast(`Downloading ${file.name}…`, 'info', 0);
+  try {
+    const f = await fetchRepoBook(file);
+    const b = await importEpub(f, folder || '', { repoPath: file.path });
+    toast(`Added "${b.title}". Click Save to sync it to your other devices.`, 'success');
+    location.hash = `#/library/book/${b.id}`;
+  } catch (e) { toast(e.message, 'error'); }
+  finally { t(); }
 }
 
 export function bindShelf(main, ctx, getFolder) {
@@ -135,6 +171,9 @@ export function bindShelf(main, ctx, getFolder) {
   ctx.listen(main, 'dragleave', (e) => { if (!main.contains(e.relatedTarget)) main.querySelector('#drop-zone')?.classList.remove('dragging'); });
   ctx.listen(main, 'drop', (e) => { if (!e.dataTransfer?.files?.length) return; e.preventDefault(); main.querySelector('#drop-zone')?.classList.remove('dragging'); upload(e.dataTransfer.files); });
   ctx.listen(main, 'click', (e) => {
+    if (e.target.closest('[data-repo-refresh]')) { renderRepoSection(main, true); return; }
+    const ra = e.target.closest('[data-repo-add]');
+    if (ra) { const f = main.querySelector('#repo-books')._files?.[+ra.dataset.repoAdd]; if (f) { ra.disabled = true; addFromRepo(f, getFolder()).finally(() => { ra.disabled = false; }); } return; }
     const m = e.target.closest('[data-more]'); if (!m) return;
     const r = m.getBoundingClientRect(); const b = store.get('book', m.dataset.more); if (b) bookMenu(r.left, r.bottom + 4, b);
   });

@@ -3,6 +3,7 @@
 import * as store from '../core/store.js';
 import { esc, lsGet, lsSet, debounce, clamp, loadEpub } from '../core/util.js';
 import { idbGet, idbPut } from '../core/idb.js';
+import { fetchRepoBook } from './repobooks.js';
 import { icon } from '../core/icons.js';
 import { token, onThemeChange } from '../core/theme.js';
 import { toast, emptyState } from '../core/ui.js';
@@ -42,7 +43,12 @@ export async function mountReader(main, ctx, bookId) {
   const rec = store.get('book', bookId);
   main.className = 'main-inner full';
   if (!rec) { main.innerHTML = `<div class="main-inner">${emptyState('Book not found', 'It may have been removed.', '<a class="btn" href="#/library">Back to library</a>')}</div>`; return null; }
-  const blob = await idbGet('books', bookId).catch(() => null);
+  let blob = await idbGet('books', bookId).catch(() => null);
+  if (!blob && rec.repoPath) { // book lives in the repo folder: download it on this device
+    main.innerHTML = `<div class="main-inner"><p class="muted" role="status">Downloading "${esc(rec.title)}" from your repo…</p></div>`;
+    try { blob = await fetchRepoBook({ name: rec.fileName || rec.repoPath.split('/').pop(), path: rec.repoPath }); await idbPut('books', bookId, new Blob([blob], { type: 'application/epub+zip' })); }
+    catch (e) { toast(e.message, 'error'); blob = null; }
+  }
   if (!blob) return mountMissing(main, ctx, rec);
 
   main.innerHTML = `<div class="reader">

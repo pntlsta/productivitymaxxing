@@ -4,6 +4,7 @@ import * as gh from './core/github.js';
 import { esc, plural, fmtDateTime } from './core/util.js';
 import { toast, confirmDialog, emptyState } from './core/ui.js';
 import { icon } from './core/icons.js';
+import { repoSource, saveRepoSource } from './library/repobooks.js';
 
 const label = (type, r) => store.issueTitle(type, r).replace(/^\w+: /, '');
 
@@ -34,6 +35,18 @@ export default {
         </form>
         <div id="gh-report" class="small" aria-live="polite" style="margin-top:var(--space-3)"></div>
       </section>
+      <section class="card" aria-labelledby="rb-h">
+        <h2 id="rb-h">Repo books folder</h2>
+        <p class="muted small">Upload .epub files into this folder of your site's repo on GitHub (Add file → Upload files), and they appear in the Library on any device.
+          ${repoSource().detected ? `Detected from this address: <code>${esc(repoSource().detected.owner)}/${esc(repoSource().detected.repo)}</code>. Leave owner and repo empty to use it.` : 'This page is not on a github.io address, so set the repo below.'}</p>
+        <div class="callout-warn" role="note"><strong>Public repos are public.</strong> GitHub Pages sites on free accounts come from public repos, so anyone can download books you put there. Only add books you have the right to share.</div>
+        <form id="rb-form" class="row" novalidate>
+          <div class="field"><label for="rb-owner">Owner</label><input class="input" id="rb-owner" value="${esc(repoSource().override ? repoSource().owner : '')}" placeholder="${esc(repoSource().detected?.owner || 'your-username')}" autocomplete="off"></div>
+          <div class="field"><label for="rb-repo">Repository</label><input class="input" id="rb-repo" value="${esc(repoSource().override ? repoSource().repo : '')}" placeholder="${esc(repoSource().detected?.repo || 'productivitymaxxing')}" autocomplete="off"></div>
+          <div class="field"><label for="rb-path">Folder</label><input class="input" id="rb-path" value="${esc(repoSource().path)}" autocomplete="off"></div>
+          <button class="btn" type="submit">Save folder</button>
+        </form>
+      </section>
       <section class="card" aria-labelledby="trash-h">
         <h2 id="trash-h">Deleted records</h2>
         <p class="muted small">Deleting closes the GitHub issue. Restore reopens it on the next Save.</p>
@@ -50,6 +63,13 @@ export default {
 
     const f = (id) => main.querySelector(id);
     const values = () => ({ token: f('#gh-token').value.trim(), owner: f('#gh-owner').value.trim(), repo: f('#gh-repo').value.trim() });
+    f('#rb-form').onsubmit = (e) => {
+      e.preventDefault();
+      const owner = f('#rb-owner').value.trim(), repo = f('#rb-repo').value.trim();
+      if (!!owner !== !!repo) { toast('Fill in both owner and repository, or leave both empty to auto-detect.', 'error'); return; }
+      saveRepoSource({ owner, repo, path: f('#rb-path').value });
+      toast('Repo books folder saved.', 'success');
+    };
     f('#gh-show').onchange = (e) => { f('#gh-token').type = e.target.checked ? 'text' : 'password'; };
     f('#gh-form').onsubmit = ctx.guard(async (e) => {
       e.preventDefault();

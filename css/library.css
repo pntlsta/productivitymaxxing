@@ -1,5 +1,5 @@
 /* ---------- Library shelf ---------- */
-.drop-zone { position: relative; border-radius: var(--radius-lg); min-height: 50vh; padding: var(--space-2); border: 2px dashed transparent; }
+.drop-zone { position: relative; border-radius: var(--radius-lg); min-height: 12rem; padding: var(--space-2); border: 2px dashed transparent; }
 .drop-zone.dragging { border-color: var(--accent); background: var(--accent-soft); }
 .drop-hint { display: none; position: absolute; inset: 0; align-items: center; justify-content: center; gap: var(--space-2); font-weight: 700; color: var(--accent); pointer-events: none; }
 .drop-hint svg { width: 1.5rem; height: 1.5rem; }
@@ -66,3 +66,8 @@
 .row-del { opacity: 0; width: 1.75rem; height: 1.75rem; }
 .mark-list li:hover .row-del, .row-del:focus-visible { opacity: 1; }
 @media (hover: none) { .row-del { opacity: 1; } }
+.repo-books { margin-top: var(--space-6); border-top: 1px solid var(--border); padding-top: var(--space-4); }
+.repo-head { margin-bottom: var(--space-3); }
+.repo-head h2 { margin: 0; }
+.repo-card .book-link { font: inherit; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; width: 100%; }
+.repo-card .cover { border-style: dashed; box-shadow: none; }

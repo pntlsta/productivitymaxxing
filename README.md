@@ -26,6 +26,18 @@ Then open http://localhost:8000. ES modules don't load from `file://`, so you ne
 
 > The token is stored in this browser's localStorage. Anyone with access to the machine or browser profile can read it. Only use it with a private repo you own.
 
+## Books you can open anywhere (the `books/` folder)
+
+Put `.epub` files in this repo's `books/` folder and they show up in the Library on every device that opens your GitHub Pages site:
+
+1. On GitHub, open this repo, go into the `books` folder, then click **Add file → Upload files**, drag in your `.epub` files and commit.
+2. In Workbench, open **Library**. The files are listed under **From your repo**. Click one to add it to your library and open it.
+3. Click **Save** so the book's record (progress, bookmarks, highlights) syncs to your data repo. On another device the book is already in your library, and opening it downloads the file from the repo automatically.
+
+The repo is detected from the `<owner>.github.io/<repo>` address, so no token or setup is needed. On a custom domain or a local server, set the owner, repo and folder under **Settings → Repo books folder**, or list the file names in `books/manifest.json` (for example `["My Book.epub"]`). Listings use GitHub's public API and are cached for 10 minutes; use **Refresh** to check again right away.
+
+> On a free GitHub account, Pages sites are served from **public** repos, so anyone can download the files in `books/`. Only add books you have the right to share.
+
 ## How storage works
 
 | Thing | Where it lives |
