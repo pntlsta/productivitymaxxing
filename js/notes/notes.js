@@ -16,7 +16,7 @@ let editor = null, saving = null, self = false, currentId = null, warned = false
 
 function backlinks(id) {
   const needle = `data-page="${id}"`;
-  return store.all('page').filter(p => p.id !== id && (p.blocks || []).some(b => (b.html || '').includes(needle) || (b.body || '').includes(needle) || (b.rows || []).flat().some(c => c.includes(needle))));
+  return store.all('page').filter(p => p.id !== id && (Array.isArray(p.blocks) ? p.blocks : []).some(b => (b.html || '').includes(needle) || (b.body || '').includes(needle) || (b.rows || []).flat().some(c => c.includes(needle))));
 }
 
 function save(id, patch) {

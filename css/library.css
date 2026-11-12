@@ -46,7 +46,7 @@
 .reader-panel output { font-weight: 400; color: var(--text-muted); margin-left: var(--space-2); }
 .search-hit { display: flex; flex-direction: column; gap: var(--space-1); width: 100%; text-align: left; font: inherit; font-size: 0.875rem; background: none; border: 0; border-bottom: 1px solid var(--border); padding: var(--space-2) var(--space-1); color: var(--text-primary); cursor: pointer; font-family: var(--font-serif); line-height: 1.5; }
 .search-hit:hover { background: var(--surface-sunken); }
-.search-hit mark { background: var(--hl-yellow); color: var(--text-primary); border-radius: 2px; padding: 0 1px; }
+.search-hit mark { background: var(--hl-yellow); color: var(--on-highlight); border-radius: 2px; padding: 0 1px; }
 .hit-meta { font-family: var(--font-sans); font-size: 0.75rem; color: var(--text-muted); }
 .wb-flash { animation: flash 0.6s ease-in-out 3; }
 @keyframes flash { 50% { opacity: 0.15; } }

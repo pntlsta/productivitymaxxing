@@ -114,7 +114,7 @@ a.page-link.missing { color: var(--danger); border-color: var(--danger); text-de
 .pal-title { font-weight: 600; }
 .pal-path { font-size: 0.75rem; color: var(--text-muted); margin-left: auto; }
 .pal-hit { padding-left: 2.25rem; font-size: 0.8125rem; color: var(--text-secondary); font-family: var(--font-serif); }
-.pal-hit mark { background: var(--hl-yellow); color: var(--text-primary); }
+.pal-hit mark { background: var(--hl-yellow); color: var(--on-highlight); }
 .pal-create { color: var(--accent); font-weight: 600; }
 .palette-foot { margin: var(--space-2) 0 0; }
 .palette-foot kbd { margin-right: 2px; }

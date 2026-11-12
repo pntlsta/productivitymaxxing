@@ -30,7 +30,7 @@ export function searchPages(query, { content = true } = {}) {
   for (const p of all) {
     const titleHit = !q || (p.title || 'untitled').toLowerCase().includes(q);
     const hits = [];
-    if (content && q) for (const b of p.blocks || []) { const t = blockText(b); if (t.toLowerCase().includes(q)) { hits.push({ blockId: b.id, html: mark(t, q) }); if (hits.length >= 3) break; } }
+    if (content && q) for (const b of Array.isArray(p.blocks) ? p.blocks : []) { const t = blockText(b); if (t.toLowerCase().includes(q)) { hits.push({ blockId: b.id, html: mark(t, q) }); if (hits.length >= 3) break; } }
     if (titleHit || hits.length) out.push({ page: p, titleHit, hits });
   }
   return out.sort((a, b) => (b.titleHit - a.titleHit) || (b.page.updatedAt || '').localeCompare(a.page.updatedAt || '')).slice(0, 40);

@@ -57,13 +57,12 @@ function loadCache() {
   }
 }
 /** Rebuild the live view: server state (meta) with the pending queue applied on top. */
-function rebuild() {
-  for (const type of TYPES) {
-    tables[type] = new Map(); trash[type] = new Map();
-    for (const [id, m] of meta[type]) (m.s === 'closed' ? trash : tables)[type].set(id, m.r);
-  }
-  applyQueue();
+function rebuildType(type) {
+  tables[type] = new Map(); trash[type] = new Map();
+  for (const [id, m] of meta[type]) (m.s === 'closed' ? trash : tables)[type].set(id, m.r);
+  applyQueue(type);
 }
+function rebuild() { TYPES.forEach(rebuildType); }
 function saveCache(type) {
   const out = {};
   for (const m of meta[type].values()) out[m.number] = { u: m.u, s: m.s, r: m.r };
@@ -88,10 +87,10 @@ function enqueue(type, id, action, record) {
   }
   persistQueue();
 }
-function applyQueue() {
+function applyQueue(only) {
   for (const op of queue) {
     const { type, id } = op;
-    if (!tables[type]) continue;
+    if (!tables[type] || (only && type !== only)) continue;
     if (op.action === 'delete') { const r = tables[type].get(id) || op.record; tables[type].delete(id); if (r) trash[type].set(id, r); }
     else { trash[type].delete(id); tables[type].set(id, op.record); }
   }
@@ -150,11 +149,12 @@ export function restore(type, id) {
 
 // ---------- sync (pull) ----------
 export async function sync(types = TYPES) {
-  if (!gh.isConfigured() || !navigator.onLine) return { skipped: true };
+  if (!gh.isConfigured() || !navigator.onLine || flushing) return { skipped: true };
   const errors = [];
   types.forEach(t => loading.add(t));
   types.forEach(t => emit('change', t));
-  for (const type of types) {
+  // All record types load in parallel; each one renders as soon as it arrives.
+  await Promise.all(types.map(async (type) => {
     try {
       const prevCache = lsGet(cacheKey(type), {});
       const issues = await gh.listIssues(`db:${type}`);
@@ -169,10 +169,8 @@ export async function sync(types = TYPES) {
       synced.add(type);
       saveCache(type);
     } catch (e) { errors.push(`${type}: ${e.message}`); }
-    finally { loading.delete(type); }
-  }
-  rebuild();
-  types.forEach(t => emit('change', t));
+    finally { loading.delete(type); rebuildType(type); emit('change', type); }
+  }));
   emit('sync', errors);
   return { errors };
 }

@@ -14,7 +14,8 @@ const SHORTCUTS = [
 const EMOJIS = ['💡', '⚠️', '✅', '📌', '❗', 'ℹ️', '🔥', '📝'];
 
 export function createEditor(root, initialBlocks, opts) {
-  let blocks = JSON.parse(JSON.stringify(initialBlocks?.length ? initialBlocks : [newBlock('text')]));
+  let blocks = JSON.parse(JSON.stringify(Array.isArray(initialBlocks) && initialBlocks.length ? initialBlocks.filter(b => b && b.id && b.type) : [newBlock('text')]));
+  if (!blocks.length) blocks.push(newBlock('text'));
   const find = (id) => blocks.find(b => b.id === id);
   const idx = (id) => blocks.findIndex(b => b.id === id);
   const changed = () => opts.onChange(blocks);

@@ -30,7 +30,7 @@ export async function renamePage(p) {
   if (v) store.update('page', p.id, { icon: v.icon || '📄', title: v.title });
 }
 export function duplicatePage(p) {
-  const copyBlocks = JSON.parse(JSON.stringify(p.blocks || [])).map(b => ({ ...b, id: uuid() }));
+  const copyBlocks = JSON.parse(JSON.stringify(Array.isArray(p.blocks) ? p.blocks : [])).map(b => ({ ...b, id: uuid() }));
   const sibs = childrenOf(p.parentId); const i = sibs.findIndex(s => s.id === p.id);
   const order = sibs[i + 1] ? ((p.order ?? 0) + (sibs[i + 1].order ?? 0)) / 2 : (p.order ?? 0) + 1;
   const c = store.create('page', { parentId: p.parentId || null, order, icon: p.icon, title: `${p.title} (copy)`, blocks: copyBlocks });
