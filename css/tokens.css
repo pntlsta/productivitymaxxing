@@ -1,0 +1,112 @@
+/* =========================================================
+   Design tokens. The ONLY place colors are defined.
+   Light theme on :root, dark overrides under [data-theme="dark"].
+   ========================================================= */
+:root {
+  /* Core palette tokens */
+  --background: #f6f6f3;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #eeeeea;
+  --border: #d9d9d3;
+  --border-strong: #b9b9b1;
+  --text-primary: #1b1b1f;
+  --text-secondary: #45454d;
+  --text-muted: #63636c;
+  --accent: #2b5bcc;
+  --accent-hover: #2149a8;
+  --accent-soft: #e4ebfb;
+  --on-accent: #ffffff;
+  --success: #1d7a46;
+  --success-soft: #e1f3e8;
+  --warning: #8a5a00;
+  --warning-soft: #fbf0d6;
+  --danger: #b4282e;
+  --danger-soft: #fbe5e5;
+  --focus-ring: #2b5bcc;
+  --shadow: rgba(20, 20, 30, 0.12);
+  --overlay: rgba(20, 20, 30, 0.42);
+  --skeleton: #e6e6e1;
+  --skeleton-shine: #f2f2ee;
+
+  /* Highlight colors (reader annotations, editor) */
+  --hl-yellow: #f5d547;
+  --hl-green: #7fd18b;
+  --hl-blue: #79b3f2;
+  --hl-pink: #f29bc1;
+  --search-flash: #ffb020;
+
+  /* Code highlighting */
+  --code-bg: #f0f0ec;
+  --code-keyword: #8a2bb0;
+  --code-string: #1d6b3a;
+  --code-number: #a14a00;
+  --code-comment: #6a6a72;
+  --code-fn: #2149a8;
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Iowan Old Style", "Charter", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* Spacing scale (rem) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  --radius-sm: 0.25rem;
+  --radius: 0.5rem;
+  --radius-lg: 0.875rem;
+
+  --sidebar-width: 16rem;
+  --rail-width: 3.5rem;
+
+  --transition-colors: background-color 150ms ease, color 150ms ease, border-color 150ms ease, fill 150ms ease;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --background: #131316;
+  --surface: #1b1b1f;
+  --surface-raised: #25252a;
+  --surface-sunken: #0f0f12;
+  --border: #34343b;
+  --border-strong: #4a4a53;
+  --text-primary: #ececf0;
+  --text-secondary: #b9b9c2;
+  --text-muted: #9a9aa4;
+  --accent: #7ea4ff;
+  --accent-hover: #a3bfff;
+  --accent-soft: #232f4d;
+  --on-accent: #0e1424;
+  --success: #5fd08f;
+  --success-soft: #16301f;
+  --warning: #f0bf55;
+  --warning-soft: #33280f;
+  --danger: #ff8a8a;
+  --danger-soft: #3a1a1b;
+  --focus-ring: #9bb8ff;
+  --shadow: rgba(0, 0, 0, 0.5);
+  --overlay: rgba(0, 0, 0, 0.6);
+  --skeleton: #24242a;
+  --skeleton-shine: #2e2e35;
+
+  --hl-yellow: #b3961c;
+  --hl-green: #3f8f4b;
+  --hl-blue: #3a72b0;
+  --hl-pink: #b0567f;
+  --search-flash: #e08a00;
+
+  --code-bg: #101014;
+  --code-keyword: #d49bff;
+  --code-string: #8fdc9f;
+  --code-number: #ffb877;
+  --code-comment: #8d8d97;
+  --code-fn: #9bb8ff;
+  color-scheme: dark;
+}

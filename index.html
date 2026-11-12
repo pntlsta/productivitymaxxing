@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workbench</title>
+  <meta name="description" content="Workbench: course planner, time clock, notes workspace and ebook reader.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%232b5bcc'/%3E%3Cpath d='M6 18V10l6-4 6 4v8' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+  <script>
+    // Set theme before first paint to avoid a flash.
+    (function () {
+      try { var t = JSON.parse(localStorage.getItem('wb.theme')); } catch (e) { t = null; }
+      document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    })();
+  </script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/modules.css">
+  <link rel="stylesheet" href="css/notes.css">
+  <link rel="stylesheet" href="css/library.css">
+  <link rel="stylesheet" href="css/print.css">
+</head>
+<body class="is-home">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Workbench sidebar">
+      <div class="sidebar-resizer" role="separator" aria-orientation="vertical" aria-label="Resize sidebar" tabindex="0"></div>
+      <div class="sidebar-top">
+        <button class="home-btn" id="home-btn" aria-label="Workbench home">
+          <span class="logo" aria-hidden="true"></span><span class="title">Workbench</span>
+        </button>
+        <span class="offline-badge" id="offline-badge" hidden>Offline</span>
+        <button class="icon-btn collapse-toggle" id="collapse-btn" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="sidebar"></button>
+      </div>
+      <nav class="module-nav" aria-label="Modules" id="module-nav"></nav>
+      <div class="sidebar-context" id="sidebar-context" aria-label="Module navigation"></div>
+      <div class="sidebar-context-spacer"></div>
+      <div class="sidebar-bottom" id="sidebar-bottom"></div>
+    </aside>
+    <div class="sidebar-scrim" id="sidebar-scrim"></div>
+    <div class="main">
+      <div class="mobile-topbar">
+        <button class="icon-btn" id="mobile-menu" aria-label="Open sidebar" aria-controls="sidebar" aria-expanded="false"></button>
+        <strong id="mobile-title">Workbench</strong>
+      </div>
+      <main id="main" tabindex="-1"></main>
+    </div>
+  </div>
+  <div id="print-root" aria-hidden="true"></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+/* ---------- Time Clock ---------- */
+.clock-now { display: flex; flex-direction: column; align-items: flex-end; }
+.clock-time { font-size: 1.75rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.punch-card { margin-bottom: var(--space-4); }
+.punch-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+.punch-btn { min-height: 3.25rem; font-size: 1rem; }
+@media (max-width: 640px) { .punch-row { grid-template-columns: 1fr 1fr; } }
+.table-wrap { overflow-x: auto; }
+.timesheet th[scope="row"] { font-weight: 600; white-space: nowrap; }
+.timesheet tr.is-today th, .timesheet tr.is-today td { background: var(--accent-soft); }
+.cell-btn { font: inherit; background: none; border: 1px solid transparent; border-radius: var(--radius-sm); padding: var(--space-1) var(--space-2); cursor: pointer; color: var(--text-primary); min-width: 5.5rem; text-align: left; font-variant-numeric: tabular-nums; }
+.cell-btn:hover { border-color: var(--border-strong); background: var(--surface); }
+.cell-input { min-height: 2rem; padding: var(--space-1) var(--space-2); width: 8rem; }
