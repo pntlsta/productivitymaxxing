@@ -77,6 +77,13 @@ async function route() {
   }
 }
 
+// Global Ctrl+K: notes command palette (search page titles and content).
+addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k' && !e.shiftKey) {
+    e.preventDefault();
+    import('./notes/palette.js').then(m => m.openSearchPalette()).catch(err => toast(err.message, 'error'));
+  }
+});
 addEventListener('error', (e) => { if (e.message && !/ResizeObserver/.test(e.message)) toast(`Error: ${e.message}`, 'error'); });
 addEventListener('unhandledrejection', (e) => { const m = e.reason?.message || String(e.reason); if (!/AbortError/.test(m)) toast(`Error: ${m}`, 'error'); });
 

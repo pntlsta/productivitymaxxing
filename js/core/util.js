@@ -14,11 +14,14 @@ export function uuid() {
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ESC[c]);
 
+/** Debounced fn with flush() (runs now, only if a call is pending), cancel() and pending(). */
 export function debounce(fn, ms) {
-  let t;
-  const d = (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
-  d.flush = (...a) => { clearTimeout(t); fn(...a); };
-  d.cancel = () => clearTimeout(t);
+  let t, args = null;
+  const run = () => { const a = args; args = null; fn(...a); };
+  const d = (...a) => { args = a; clearTimeout(t); t = setTimeout(run, ms); };
+  d.flush = () => { clearTimeout(t); if (args) run(); };
+  d.cancel = () => { clearTimeout(t); args = null; };
+  d.pending = () => !!args;
   return d;
 }
 
@@ -83,7 +86,7 @@ export function sanitizeHTML(html) {
         if (n.startsWith('on') || n === 'style' || n === 'srcdoc') el.removeAttribute(a.name);
         else if ((n === 'href' || n === 'src' || n === 'xlink:href') && /^\s*(javascript|vbscript|data:text)/i.test(a.value)) el.removeAttribute(a.name);
       }
-      if (el.tagName === 'A' && el.getAttribute('href')) { el.setAttribute('rel', 'noopener noreferrer'); el.setAttribute('target', '_blank'); }
+      if (el.tagName === 'A' && el.getAttribute('href') && !el.getAttribute('href').startsWith('#')) { el.setAttribute('rel', 'noopener noreferrer'); el.setAttribute('target', '_blank'); }
       walk(el);
     }
   };
