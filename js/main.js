@@ -92,4 +92,10 @@ initShell();
 addEventListener('hashchange', route);
 if (!location.hash) history.replaceState(null, '', '#/home');
 route();
-store.sync().then(r => { if (r?.errors?.length) toast(`Some data could not load: ${r.errors[0]}`, 'error'); });
+store.sync().then(async (r) => {
+  if (r?.errors?.length) { toast(`Some data could not load: ${r.errors[0]}`, 'error'); return; } // don't seed against partial data
+  const { applySeed } = await import('./core/seed.js');
+  const { isConfigured } = await import('./core/github.js');
+  const seeded = await applySeed().catch(e => { console.error(e); return null; });
+  if (seeded?.total) toast(`Loaded ${seeded.total} records from the repo's data file. ${isConfigured() ? 'Click Save to store them in your GitHub data repo.' : 'Connect GitHub in Settings and click Save to sync them to other devices.'}`, 'success', 10000);
+});
