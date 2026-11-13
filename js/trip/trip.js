@@ -39,7 +39,7 @@ function itinerary() {
   for (const [i, [start, label]] of PHASES.entries()) {
     const end = PHASES[i + 1]?.[0] || '9999';
     const days = DAYS.filter(d => d.date >= start && d.date < end);
-    html += `<h2 class="phase">${esc(label)}</h2><ol class="days">${days.map(d => `<li class="day-card ${d.date === t ? 'is-today' : d.date < t ? 'past' : ''}" id="day-${d.date}">
+    html += `<h2 class="phase">${esc(label)}</h2><ol class="trip-days">${days.map(d => `<li class="day-card ${d.date === t ? 'is-today' : d.date < t ? 'past' : ''}" id="day-${d.date}">
       <div class="day-head"><span class="day-date">${weekday(d.date)}, ${fmtShort(d.date)}</span><span class="day-place">${esc(d.place)}</span>${d.date === t ? '<span class="badge accent">Today</span>' : ''}</div>
       <ul class="slots">${d.items.map(it => `<li class="slot kind-${it.kind}"><span class="slot-time">${esc(it.time)}</span><span class="slot-icon" aria-hidden="true">${KIND_ICON[it.kind]}</span>
         <span class="slot-text">${esc(it.text)} ${(it.flags || []).map(flagChip).join(' ')}</span></li>`).join('')}</ul></li>`).join('')}</ol>`;

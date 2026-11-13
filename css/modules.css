@@ -106,7 +106,7 @@
 .flag p { margin: var(--space-1) 0 0; color: var(--text-secondary); font-size: 0.875rem; }
 .flag.sev-conflict { box-shadow: inset 3px 0 0 var(--danger); padding-left: var(--space-3); }
 .phase { margin: var(--space-6) 0 var(--space-3); font-size: 1.15rem; }
-.days { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.trip-days { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
 .day-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-3) var(--space-4); break-inside: avoid; }
 .day-card.is-today { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
 .day-card.past { opacity: 0.7; }
