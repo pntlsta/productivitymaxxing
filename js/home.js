@@ -5,6 +5,7 @@ import { toggleTheme, currentTheme, onThemeChange } from './core/theme.js';
 import { MODULES } from './shell.js';
 import { weekRange, plural } from './core/util.js';
 import { thisWeekHours } from './timeclock/calc.js';
+import { tripStatus } from './trip/trip.js';
 
 function status(id) {
   switch (id) {
@@ -16,10 +17,11 @@ function status(id) {
     case 'timeclock': return `${thisWeekHours().toFixed(2)} hours this week`;
     case 'notes': return plural(store.all('page').length, 'page');
     case 'library': return plural(store.all('book').length, 'book');
+    case 'trip': return tripStatus();
   }
   return '';
 }
-const TYPES_FOR = { calendar: 'item', timeclock: 'punch', notes: 'page', library: 'book' };
+const TYPES_FOR = { calendar: 'item', timeclock: 'punch', notes: 'page', library: 'book', trip: 'trip' };
 
 export default {
   mount(main, ctx) {

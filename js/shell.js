@@ -11,6 +11,7 @@ export const MODULES = [
   { id: 'timeclock', title: 'Time Clock', icon: 'clock', desc: 'Hours and punches' },
   { id: 'notes', title: 'Notes', icon: 'notes', desc: 'Workspace' },
   { id: 'library', title: 'Library', icon: 'library', desc: 'Ebook reader' },
+  { id: 'trip', title: 'Trip', icon: 'plane', desc: 'Philippines + Thailand' },
 ];
 
 const sidebar = () => $('#sidebar');

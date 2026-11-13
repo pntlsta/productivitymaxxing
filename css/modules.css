@@ -95,3 +95,48 @@
 .prose table { border-collapse: collapse; } .prose td, .prose th { border: 1px solid var(--border); padding: var(--space-1) var(--space-2); }
 .prose img { max-width: 100%; }
 @media (max-width: 960px) { .nb-grid { grid-template-columns: 1fr; } .item-dates { display: none; } .day { min-height: 4.5rem; } .chip-t { display: none; } }
+
+/* ---------- Trip ---------- */
+.trip-tabs { margin-bottom: var(--space-4); flex-wrap: wrap; }
+.flags-card h2 .muted { font-weight: 400; }
+.flag-list { list-style: none; margin: 0; padding: 0; }
+.flag { display: flex; gap: var(--space-3); align-items: flex-start; padding: var(--space-2) 0; border-bottom: 1px solid var(--border); scroll-margin-top: var(--space-6); }
+.flag:last-child { border-bottom: 0; }
+.flag .badge { flex: none; min-width: 6.5rem; justify-content: center; margin-top: 0.15rem; }
+.flag p { margin: var(--space-1) 0 0; color: var(--text-secondary); font-size: 0.875rem; }
+.flag.sev-conflict { box-shadow: inset 3px 0 0 var(--danger); padding-left: var(--space-3); }
+.phase { margin: var(--space-6) 0 var(--space-3); font-size: 1.15rem; }
+.days { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.day-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-3) var(--space-4); break-inside: avoid; }
+.day-card.is-today { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.day-card.past { opacity: 0.7; }
+.day-head { display: flex; gap: var(--space-3); align-items: baseline; margin-bottom: var(--space-2); flex-wrap: wrap; }
+.day-date { font-weight: 700; min-width: 7.5rem; }
+.day-place { color: var(--text-secondary); }
+.slots { list-style: none; margin: 0; padding: 0; }
+.slot { display: grid; grid-template-columns: 7.5rem 1.25rem 1fr; gap: var(--space-2); padding: 0.2rem 0; font-size: 0.9rem; }
+.slot-time { color: var(--text-muted); font-variant-numeric: tabular-nums; font-size: 0.8125rem; padding-top: 0.1rem; }
+.slot-icon { color: var(--text-muted); text-align: center; }
+.kind-flight .slot-icon, .kind-flight .slot-text { color: var(--accent); }
+.kind-flight .slot-text { font-weight: 600; }
+.kind-tbd .slot-text { color: var(--text-muted); font-style: italic; }
+.kind-note .slot-icon { color: var(--warning); }
+.flag-chip { text-decoration: none; margin-left: var(--space-1); vertical-align: middle; }
+.check-list { list-style: none; margin: 0 0 var(--space-3); padding: 0; }
+.check-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-1) var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--border); }
+.check-row .check { align-items: flex-start; font-size: 0.9rem; flex: 1 1 20rem; }
+.check-row .check input { margin-top: 0.2rem; flex: none; }
+.check-row.done .check span { text-decoration: line-through; color: var(--text-muted); }
+.check-meta { display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; }
+.pack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); gap: var(--space-4); }
+.pack-group h3 { font-size: 0.95rem; margin: 0 0 var(--space-1); }
+.pack-table td, .pack-table th { padding: var(--space-1) var(--space-2); }
+.pack-table input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+.add-pack { margin-top: var(--space-4); align-items: flex-end; }
+.guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr)); gap: var(--space-4); }
+.guide-grid .card + .card { margin-top: 0; }
+.guide-grid ul { margin: 0; padding-left: 1.2rem; } .guide-grid li { margin-bottom: var(--space-1); font-size: 0.9rem; }
+.vault-text { font-family: var(--font-mono); font-size: 0.85rem; min-height: 22rem; }
+.trip .card + .card { margin-top: var(--space-4); }
+@media (max-width: 640px) { .slot { grid-template-columns: 5rem 1rem 1fr; } }
+@media print { .no-print { display: none !important; } .day-card, .card { box-shadow: none; } }

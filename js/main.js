@@ -13,6 +13,7 @@ const LOADERS = {
   timeclock: () => import('./timeclock/timeclock.js'),
   notes: () => import('./notes/notes.js'),
   library: () => import('./library/library.js'),
+  trip: () => import('./trip/trip.js'),
 };
 
 let current = null; // { id, mod, ctx }

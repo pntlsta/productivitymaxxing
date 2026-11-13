@@ -6,10 +6,10 @@ import { isoDate } from './util.js';
 export const FORMAT = 'workbench-backup';
 const REQUIRED = {
   course: ['code', 'name'], item: ['courseId', 'name'], notebook: ['name'], note: ['notebookId'],
-  announcement: ['date', 'title'], punch: ['date'], page: ['title'], book: ['title'], bookmark: ['bookId', 'cfi'], annotation: ['bookId', 'cfiRange'],
+  announcement: ['date', 'title'], punch: ['date'], page: ['title'], book: ['title'], bookmark: ['bookId', 'cfi'], annotation: ['bookId', 'cfiRange'], trip: ['name'],
 };
 // Parents first, so references can be remapped onto records that already exist.
-const ORDER = ['course', 'item', 'notebook', 'note', 'announcement', 'punch', 'page', 'book', 'bookmark', 'annotation'];
+const ORDER = ['course', 'item', 'notebook', 'note', 'announcement', 'punch', 'page', 'book', 'bookmark', 'annotation', 'trip'];
 const lc = (s) => String(s ?? '').trim().toLowerCase();
 
 export function exportAll() {
