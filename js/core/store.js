@@ -238,8 +238,9 @@ export async function flush(onProgress = () => {}) {
       } catch (e) {
         results.push({ op, ok: false, error: e.message });
         onProgress({ done: i + 1, total: batch.length, op, status: 'fail', error: e.message });
-        if (e.status === 401 || (e.status === 403 && /hourly rate limit/.test(e.message))) { // no point continuing
-          const why = e.status === 401 ? 'Skipped (auth failed)' : 'Skipped (rate limit); still queued';
+        const noPermission = e.status === 403 && /lacks permission/.test(e.message);
+        if (e.status === 401 || noPermission || (e.status === 403 && /hourly rate limit/.test(e.message))) { // no point continuing
+          const why = e.status === 401 || noPermission ? 'Not sent (fix the token); still queued' : 'Skipped (rate limit); still queued';
           for (let j = i + 1; j < batch.length; j++) { results.push({ op: batch[j], ok: false, error: why }); onProgress({ done: j + 1, total: batch.length, op: batch[j], status: 'fail', error: why }); }
           break;
         }

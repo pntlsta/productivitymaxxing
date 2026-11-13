@@ -28,6 +28,7 @@ async function request(path, { method = 'GET', body, token } = {}) {
     let msg = res.statusText;
     try { const j = await res.json(); msg = j.message || msg; if (j.errors) msg += ': ' + j.errors.map(e => e.message || e.code).join(', '); } catch {}
     if (res.status === 401) msg = 'Token rejected (401). Check that it is valid and not expired.';
+    if (res.status === 403 && /not accessible by personal access token/i.test(msg)) msg = 'Token lacks permission. Edit the token on GitHub: select this repository and set Issues to "Read and write".';
     if ((res.status === 403 || res.status === 429) && res.headers.get('x-ratelimit-remaining') !== '0' && (res.headers.get('retry-after') || /secondary rate limit/i.test(msg))) {
       throw new GitHubError(res.status, 'GitHub is throttling rapid writes.', Number(res.headers.get('retry-after')) || 60);
     }
