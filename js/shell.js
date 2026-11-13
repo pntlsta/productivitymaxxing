@@ -122,16 +122,18 @@ export async function openSaveDialog() {
   if (store.isFlushing()) return;
   const body = `
     <p id="save-status">Sending ${ops.length} change${ops.length === 1 ? '' : 's'} to GitHub…</p>
+    ${ops.length > 20 ? `<p class="small muted">Large batch: changes are sent about one per second so GitHub doesn't block them (about ${Math.max(1, Math.round(ops.length / 50))} minute${ops.length > 75 ? 's' : ''}). Keep this tab open; anything not sent stays queued.</p>` : ''}
     <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${ops.length}" aria-valuenow="0" aria-labelledby="save-status"><span></span></div>
     <ul class="op-list">${ops.map(op => `<li data-op="${op.opId}"><span class="st wait">Queued</span><span>${opLabel(op)}</span></li>`).join('')}</ul>`;
   const { dlg, close } = openDialog({ title: 'Save changes', body, foot: '<button class="btn btn-primary" data-close>Close</button>', wide: true });
   const bar = dlg.querySelector('.progress'), fill = bar.firstElementChild;
   try {
-    const results = await store.flush(({ done, total, op, status, error }) => {
+    const results = await store.flush(({ done, total, op, status, error, wait }) => {
       bar.setAttribute('aria-valuenow', done); fill.style.width = `${(done / total) * 100}%`;
       const li = dlg.querySelector(`[data-op="${op.opId}"]`); if (!li) return;
       const st = li.querySelector('.st');
-      if (status === 'sending') { st.textContent = 'Sending'; }
+      if (status === 'waiting') { st.textContent = 'Waiting'; dlg.querySelector('#save-status').textContent = `GitHub is throttling rapid writes. Waiting ${wait} seconds, then continuing automatically. Keep this tab open.`; return; }
+      if (status === 'sending') { st.textContent = 'Sending'; if (done) dlg.querySelector('#save-status').textContent = `Sending ${done + 1} of ${total}…`; li.scrollIntoView({ block: 'nearest' }); }
       else if (status === 'ok') { st.textContent = 'Saved'; st.className = 'st ok'; }
       else { st.textContent = 'Failed'; st.className = 'st fail'; li.querySelector('span:last-child').insertAdjacentHTML('beforeend', `<span class="err">${esc(error)}</span>`); }
     });

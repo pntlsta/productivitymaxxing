@@ -38,6 +38,10 @@ The repo is detected from the `<owner>.github.io/<repo>` address, so no token or
 
 > On a free GitHub account, Pages sites are served from **public** repos, so anyone can download the files in `books/`. Only add books you have the right to share.
 
+## Import and export
+
+**Settings → Import and export** downloads every record as one JSON backup file, or imports one. Import shows a preview, skips anything you already have (same course code, same item name in a course, same punch date, and so on) and queues the rest; then click **Save**. Large batches are sent about one per second, and Save waits automatically if GitHub throttles it, so a few hundred records take a few minutes.
+
 ## How storage works
 
 | Thing | Where it lives |

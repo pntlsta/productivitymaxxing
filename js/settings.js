@@ -1,10 +1,11 @@
 // Settings: GitHub connection, test, sync, trash (undelete), local data management.
 import * as store from './core/store.js';
 import * as gh from './core/github.js';
-import { esc, plural, fmtDateTime } from './core/util.js';
-import { toast, confirmDialog, emptyState } from './core/ui.js';
+import { esc, plural, fmtDateTime, downloadText } from './core/util.js';
+import { toast, confirmDialog, emptyState, openDialog } from './core/ui.js';
 import { icon } from './core/icons.js';
 import { repoSource, saveRepoSource } from './library/repobooks.js';
+import { exportAll, exportFileName, importData } from './core/backup.js';
 
 const label = (type, r) => store.issueTitle(type, r).replace(/^\w+: /, '');
 
@@ -52,6 +53,14 @@ export default {
         <p class="muted small">Deleting closes the GitHub issue. Restore reopens it on the next Save.</p>
         <div id="trash"></div>
       </section>
+      <section class="card" aria-labelledby="io-h">
+        <h2 id="io-h">Import and export</h2>
+        <p class="muted small">Export saves every record (not ebook files or images) to one JSON file. Import adds records from such a file, skipping anything you already have, and queues them; click Save afterwards.</p>
+        <div class="btn-group">
+          <button class="btn" id="export-btn">${icon('download')} Export backup</button>
+          <label class="btn" tabindex="0" role="button" id="import-label">${icon('upload')} Import file…<input type="file" accept=".json,application/json" hidden id="import-input"></label>
+        </div>
+      </section>
       <section class="card" aria-labelledby="local-h">
         <h2 id="local-h">Local data</h2>
         <p class="muted small" id="local-info"></p>
@@ -70,6 +79,26 @@ export default {
       saveRepoSource({ owner, repo, path: f('#rb-path').value });
       toast('Repo books folder saved.', 'success');
     };
+    f('#export-btn').onclick = () => { downloadText(exportFileName(), JSON.stringify(exportAll(), null, 1), 'application/json'); toast('Backup downloaded.', 'success'); };
+    f('#import-label').onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); f('#import-input').click(); } };
+    f('#import-input').onchange = ctx.guard(async (e) => {
+      const file = e.target.files[0]; e.target.value = ''; if (!file) return;
+      let data, plan;
+      try { data = JSON.parse(await file.text()); plan = importData(data, { dryRun: true }); }
+      catch (err) { toast(`Can't import ${file.name}: ${err.message}`, 'error'); return; }
+      const rows = Object.entries(plan.perType).filter(([, s]) => s.add + s.skip + s.invalid);
+      const body = `<p>${esc(file.name)}</p>
+        <table class="table"><thead><tr><th>Type</th><th class="num">New</th><th class="num">Already here</th><th class="num">Invalid</th></tr></thead>
+        <tbody>${rows.map(([t, s]) => `<tr><td>${t}</td><td class="num">${s.add}</td><td class="num">${s.skip}</td><td class="num">${s.invalid}</td></tr>`).join('')}</tbody></table>
+        ${plan.warnings.map(w => `<p class="small muted">${esc(w)}</p>`).join('')}
+        <p class="small muted">${plan.total ? `${plural(plan.total, 'record')} will be queued. Saving that many to GitHub takes about ${Math.max(1, Math.round(plan.total * 1.3 / 60))} minute${plan.total * 1.3 >= 90 ? 's' : ''}.` : 'Nothing new to import.'}</p>`;
+      const { dlg, close } = openDialog({ title: 'Import records', body, wide: true, foot: `<button class="btn" data-close>Cancel</button><button class="btn btn-primary" id="do-import" ${plan.total ? '' : 'disabled'}>Import ${plan.total}</button>` });
+      dlg.querySelector('#do-import').onclick = () => {
+        const done = importData(data);
+        close();
+        toast(`Imported ${plural(done.total, 'record')}. Click Save to send them to GitHub.`, 'success', 8000);
+      };
+    });
     f('#gh-show').onchange = (e) => { f('#gh-token').type = e.target.checked ? 'text' : 'password'; };
     f('#gh-form').onsubmit = ctx.guard(async (e) => {
       e.preventDefault();

@@ -198,7 +198,11 @@ async function sendOp(op) {
   meta[type].set(id, { number: issue.number, u: issue.updated_at, s: issue.state, r: action === 'delete' ? m.r : record });
 }
 
-/** Send queued ops sequentially. onProgress({done,total,op,status,error}) */
+/** Pause between writes on large batches: GitHub asks for roughly 1 second between content-creating requests. */
+export const config = { writeDelay: 1000, maxRetries: 3 };
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+/** Send queued ops sequentially. onProgress({done,total,op,status,error,wait}) */
 export async function flush(onProgress = () => {}) {
   if (flushing) return null;
   if (!gh.isConfigured()) throw new Error('Connect a GitHub repo in Settings before saving.');
@@ -211,7 +215,16 @@ export async function flush(onProgress = () => {}) {
       const op = batch[i];
       onProgress({ done: i, total: batch.length, op, status: 'sending' });
       try {
-        await sendOp(op);
+        if (i > 0 && batch.length > 20 && config.writeDelay) await sleep(config.writeDelay);
+        for (let attempt = 0; ; attempt++) {
+          try { await sendOp(op); break; }
+          catch (e) {
+            if (!e.retryAfter || attempt >= config.maxRetries) throw e;
+            onProgress({ done: i, total: batch.length, op, status: 'waiting', wait: e.retryAfter });
+            await sleep(e.retryAfter * 1000);
+            onProgress({ done: i, total: batch.length, op, status: 'sending' });
+          }
+        }
         const qi = queue.findIndex(o => o.opId === op.opId);
         if (qi !== -1) queue.splice(qi, 1);
         else { // op was coalesced while in flight; a queued "create" for it must now be an update
@@ -225,8 +238,9 @@ export async function flush(onProgress = () => {}) {
       } catch (e) {
         results.push({ op, ok: false, error: e.message });
         onProgress({ done: i + 1, total: batch.length, op, status: 'fail', error: e.message });
-        if (e.status === 401) { // no point continuing
-          for (let j = i + 1; j < batch.length; j++) { results.push({ op: batch[j], ok: false, error: 'Skipped (auth failed)' }); onProgress({ done: j + 1, total: batch.length, op: batch[j], status: 'fail', error: 'Skipped (auth failed)' }); }
+        if (e.status === 401 || (e.status === 403 && /hourly rate limit/.test(e.message))) { // no point continuing
+          const why = e.status === 401 ? 'Skipped (auth failed)' : 'Skipped (rate limit); still queued';
+          for (let j = i + 1; j < batch.length; j++) { results.push({ op: batch[j], ok: false, error: why }); onProgress({ done: j + 1, total: batch.length, op: batch[j], status: 'fail', error: why }); }
           break;
         }
       }
