@@ -145,7 +145,7 @@ export const DAYS = [
 // severity: conflict (two things can't both happen) | tight | gap (missing info) | todo
 export const FLAGS = {
   'ticket-not-issued': { severity: 'conflict', title: 'AA 3500 (Dec 19) shows "Ticket not issued"',
-    text: 'On the Cathay Pacific booking page, the Moline → Chicago flight says "Ticket not issued" while every other flight says "Confirmed". Without an issued ticket you can be refused at check-in. Call Cathay Pacific (who sold the trip) and ask them to issue the AA 3500 ticket, then check it shows ticketed for both of you.' },
+    text: 'In the flight details on Cathay Pacific’s site, the Moline → Chicago flight says "Ticket not issued" (the trip list and the seats say "Confirmed", but those are the reservation and seat status, not the ticket). Without an issued ticket you can be refused at check-in. Check that your e-ticket receipt lists AA 3500 for both of you; if not, or if unsure, call Cathay Pacific (who sold the trip) and ask them to revalidate or reissue that segment.' },
   'dec20-transfer': { severity: 'todo', title: 'Dec 20: hotel checkout and O’Hare Terminal 5 back to back',
     text: 'Checkout is 11:00 AM and you want to be at Terminal 5 around 11:10 AM for the 2:10 PM flight. You arrive on Dec 19 at Terminal 3 but leave from Terminal 5, so ask the hotel how to get to Terminal 5 (shuttle or ride) when you check in, and leave the hotel a bit before checkout.' },
   'hkg-connection': { severity: 'tight', title: 'Dec 21: about 2 hours to connect in Hong Kong',
