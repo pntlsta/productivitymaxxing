@@ -12,7 +12,7 @@ const SEV = { conflict: ['Conflict', 'danger'], tight: ['Tight', 'warning'], gap
 const SEV_ORDER = ['conflict', 'tight', 'gap', 'todo'];
 const CUR = ['THB', 'PHP', 'USD'];
 const KIND_ICON = { flight: '✈', stay: '⌂', activity: '•', transit: '→', tbd: '?', note: '!' };
-const PHASES = [['2026-12-22', 'Philippines'], ['2027-01-03', 'Chiang Mai'], ['2027-01-05', 'Bangkok'], ['2027-01-09', 'Back in the Philippines']];
+const PHASES = [['2026-12-19', 'Getting there'], ['2026-12-22', 'Philippines'], ['2027-01-03', 'Chiang Mai'], ['2027-01-05', 'Bangkok'], ['2027-01-09', 'Back in the Philippines'], ['2027-01-10', 'Going home']];
 
 const rec = () => store.get('trip', TRIP_ID) || { checks: {}, packed: {}, paid: {}, expenses: [], customPack: [], rates: {}, vault: null };
 function patch(p) {
@@ -24,7 +24,13 @@ const daysUntil = (iso) => Math.round((parseISO(iso) - parseISO(today())) / 8640
 const money = (n, c) => { const v = Number(n); const cents = !Number.isInteger(v) ? 2 : 0; return `${c === 'USD' ? '$' : c === 'PHP' ? '₱' : ''}${v.toLocaleString(undefined, { minimumFractionDigits: cents, maximumFractionDigits: 2 })}${c === 'THB' ? ' THB' : ''}`; };
 const flagChip = (id) => { const f = FLAGS[id]; if (!f) return ''; const [l, c] = SEV[f.severity]; return `<a href="#/trip/itinerary" class="badge ${c} flag-chip" data-flag="${id}" title="${esc(f.title)}">${l}</a>`; };
 
+/** Flights departing on a given ISO date (local departure date). */
+export function flightsOn(iso) {
+  return DAYS.find(d => d.date === iso)?.items.filter(i => i.kind === 'flight') || [];
+}
 export function tripStatus() {
+  const todays = flightsOn(today());
+  if (todays.length) return `Today: ${todays.map(f => `✈ ${f.code} ${f.route} ${f.time}`).join(' · ')}`;
   const d = daysUntil(TRIP.start);
   const done = CHECKLIST.filter(c => rec().checks[c.id]).length;
   return `${d > 0 ? `${plural(d, 'day')} to go` : d >= -20 ? 'On the trip' : 'Trip done'} · ${done}/${CHECKLIST.length} checklist`;
@@ -127,6 +133,8 @@ function guide() {
 }
 
 const TEMPLATE = `FLIGHTS
+US trip (Cathay Pacific + American, Dec 19 – Jan 11) booking ref:
+  Seats:            AAdvantage #:            Global Entry KTN (Jae):
 Jan 3 MNL→DMK→CNX (AirAsia) booking ref:
   Seats:
 Jan 5 CNX→BKK (Bangkok Airways PG220) booking ref:
@@ -188,6 +196,8 @@ export default {
     tab = TABS.some(([id]) => id === ctx.params[0]) ? ctx.params[0] : 'itinerary';
     const all = ctx.guard(() => { render(main); renderSidebar(ctx.sidebar); });
     all();
+    // During the trip, open on today's card.
+    if (tab === 'itinerary') setTimeout(() => main.querySelector('.day-card.is-today')?.scrollIntoView({ block: 'start' }), 0);
     // Redraw on data changes, keeping focus (and the unsaved private-details text) where it was.
     ctx.on('change', (t) => {
       if (t !== 'trip') return;

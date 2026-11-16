@@ -142,3 +142,6 @@
 @media print { .no-print { display: none !important; } .day-card, .card { box-shadow: none; } }
 .budget-table .status-why { display: block; margin-top: 2px; max-width: 22rem; }
 .budget-table tfoot td { font-weight: 600; }
+.chip.trip-chip { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.chip.trip-chip .chip-k { color: var(--accent); }
+.trip-plane { color: var(--accent); width: 1.1rem; text-align: center; flex: none; }

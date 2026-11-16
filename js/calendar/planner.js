@@ -6,6 +6,7 @@ import { icon } from '../core/icons.js';
 import { openDialog, emptyState, skeletonRows } from '../core/ui.js';
 import { courses, course, itemRow, bindItemRows, sortItems, itemDialog, courseDialog } from './model.js';
 import { mountCommandBar } from './commands.js';
+import { flightsOn } from '../trip/trip.js';
 
 const KEY = 'wb.cal.view';
 export const view = Object.assign({ month: isoDate(new Date()).slice(0, 7), avail: true, due: true, course: 'all', status: 'all', tab: 'this' }, lsGet(KEY, {}));
@@ -73,9 +74,11 @@ function monthGrid(items) {
     const d = addDays(start, i), iso = isoDate(d);
     const ps = (byDay.get(iso) || []).sort((a, b) => (a.kind === 'due' ? 0 : 1) - (b.kind === 'due' ? 0 : 1));
     const other = d.getMonth() !== m - 1;
+    const fl = flightsOn(iso);
     cells += `<button class="day ${other ? 'other' : ''} ${iso === t ? 'today' : ''}" data-day="${iso}" role="gridcell"
-      aria-label="${fmtLong(iso)}${ps.length ? `, ${plural(ps.length, 'item')}` : ''}">
+      aria-label="${fmtLong(iso)}${fl.length ? `, ${plural(fl.length, 'flight')}` : ''}${ps.length ? `, ${plural(ps.length, 'item')}` : ''}">
       <span class="day-num">${d.getDate()}</span>
+      ${fl.map(f => `<span class="chip trip-chip" title="${esc(f.text)}"><span class="chip-k" aria-hidden="true">✈</span><span class="chip-t">${esc(f.time)} ${esc(f.code)} ${esc(f.route)}</span></span>`).join('')}
       ${ps.slice(0, 3).map(p => {
         const c = course(p.item.courseId);
         return `<span class="chip ${p.item.completed ? 'done' : ''} ${p.kind}"><span class="dot" style="background:${esc(c?.color || 'currentColor')}"></span><span class="chip-k">${p.kind === 'due' ? 'D' : 'A'}</span><span class="chip-t">${esc(p.item.name)}</span></span>`;
@@ -156,9 +159,13 @@ function openDay(iso) {
   const render = () => {
     const ps = placements(filtered()).filter(p => p.date === iso);
     const avail = ps.filter(p => p.kind === 'avail').map(p => p.item), due = ps.filter(p => p.kind === 'due').map(p => p.item);
-    return (due.length ? `<h3 class="small muted">Due</h3><ul class="item-list">${due.map(itemRow).join('')}</ul>` : '') +
+    const fl = flightsOn(iso);
+    return (fl.length ? `<h3 class="small muted">Flights</h3><ul class="item-list">${fl.map(f => `<li class="item-row"><span class="trip-plane" aria-hidden="true">✈</span>
+        <span class="item-main"><span class="item-name">${esc(f.time)} · ${esc(f.code)} ${esc(f.route)}</span><span class="item-sub">${esc(f.text)}${f.who ? ` · ${esc(f.who)}` : ''}</span></span>
+        <a class="btn btn-sm" href="#/trip/itinerary" data-close>Trip day</a></li>`).join('')}</ul>` : '') +
+      (due.length ? `<h3 class="small muted">Due</h3><ul class="item-list">${due.map(itemRow).join('')}</ul>` : '') +
       (avail.length ? `<h3 class="small muted">Available</h3><ul class="item-list">${avail.map(itemRow).join('')}</ul>` : '') +
-      (!ps.length ? emptyState('Nothing on this day', 'Add an item that is available or due on this date.') : '');
+      (!ps.length && !fl.length ? emptyState('Nothing on this day', 'Add an item that is available or due on this date.') : '');
   };
   const { dlg, body, close } = openDialog({ title: fmtLong(iso), body: render(), wide: true, foot: `<button class="btn" data-add>${icon('plus')} Add item on this day</button><button class="btn btn-primary" data-close>Close</button>` });
   bindItemRows(body);
