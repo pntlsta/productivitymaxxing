@@ -143,6 +143,7 @@ Jan 8 BKK→MNL (PAL PR737) booking ref:
   Seats:
 
 STAYS
+Hyatt Place Chicago/O'Hare Expedia itinerary #:          Hotel confirmation:
 Dagupan Airbnb (Cozy Haven) confirmation:     Unit / host:
 Baguio Airbnb confirmation:          Address / host:
 Parañaque Airbnb confirmation:       Unit / host:
