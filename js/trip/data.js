@@ -54,7 +54,7 @@ export const DAYS = [
     { time: '', kind: 'activity', text: 'Pack, weigh bags (20 kg checked each, 7 kg carry-on)' },
     { time: '', kind: 'transit', text: 'To Manila, lunch at MOA, rest', flags: ['back-to-back'] },
     { time: '', kind: 'note', text: 'Message Centre Point Plus about an airport pickup for Jan 5', flags: ['pickup-72h'] },
-    { time: '', kind: 'stay', text: 'Family checks in at SunnyPlace Residences, Parañaque (Jan 2–11)' },
+    { time: '2:00 PM', kind: 'stay', text: 'Check in: 2BDR Deluxe Suite, SunnyPlace Residences, 724 Quirino Ave, Parañaque (Airbnb, Jan 2–11). Booked for 5 guests; house allows up to 6 overnight. Building staff check-in: message the host for instructions. Total $547.10' },
     { time: '', kind: 'tbd', text: 'Where Jae and Jannica sleep tonight is TBD', flags: ['gap-jan2'] },
   ] },
   { date: '2027-01-03', place: 'Manila → Chiang Mai', items: [
@@ -80,7 +80,7 @@ export const DAYS = [
     { time: '~5:45 PM', kind: 'transit', text: 'At Chiang Mai airport (check-in desk closes 7:05 PM, 40 min before departure)' },
     { time: '7:45 PM', kind: 'flight', text: 'Bangkok Airways PG220, CNX → Bangkok Suvarnabhumi (BKK), lands 9:10 PM. Free Boutique Lounge; Blue Ribbon is a paid add-on (~950 THB each)' },
     { time: '9:10 PM', kind: 'transit', text: 'Grab or hotel transfer to Silom', flags: ['pickup-72h'] },
-    { time: 'Night', kind: 'stay', text: 'Check in: Centre Point Plus Hotel Silom, 1522/2 Soi Kaysorn 1 (Charoenkrung 50), Bangrak. Deposit THB 1,000 per night' },
+    { time: 'Night', kind: 'stay', text: 'Check in: Centre Point Plus Hotel Silom, 1522/2 Soi Kaysorn 1 (Charoenkrung 50), Charoenkrung Rd, Bangrak. Deluxe Plus with breakfast buffet; prepaid via Expedia ($455.28) with Stay Protection Plan. Check-in from 2 PM with no end time, so a late arrival is fine. Deposit THB 1,000 per night at the property. Hotel: +66 2 266 0521' },
     { time: 'Late', kind: 'activity', text: 'Easy dinner' },
   ] },
   { date: '2027-01-06', place: 'Bangkok', items: [
@@ -109,7 +109,7 @@ export const DAYS = [
     { time: '', kind: 'tbd', text: 'Where Jae and Jannica sleep (Jan 9–10) is TBD', flags: ['late-arrival'] },
   ] },
   { date: '2027-01-10', place: 'Manila', items: [{ time: '', kind: 'tbd', text: 'Plans TBD (family in Parañaque)' }] },
-  { date: '2027-01-11', place: 'Manila', items: [{ time: '', kind: 'stay', text: 'Parañaque Airbnb stay ends (family)' }] },
+  { date: '2027-01-11', place: 'Manila', items: [{ time: '12:00 PM', kind: 'stay', text: 'Check out of the Parañaque Airbnb' }] },
 ];
 
 // severity: conflict (two things can't both happen) | tight | gap (missing info) | todo
@@ -127,11 +127,11 @@ export const FLAGS = {
   'dagupan-cancel': { severity: 'todo', title: 'Dagupan Airbnb: free cancellation is only 24 hours',
     text: 'Cozy Haven Dagupan is free to cancel for 24 hours after booking, then non-refundable ($226.98 paid). If anything about Dec 23–29 might change, decide now.' },
   'gap-jan2': { severity: 'gap', title: 'Jan 2: no bed listed, with a ~6:00 AM airport arrival next day',
-    text: 'You need to be at NAIA T1 around 6:00 AM on Jan 3. The family Airbnb in Parañaque (from Jan 2) is near the airport, so staying there or nearby would make the morning easy. Confirm where you sleep and how you get to T1 at ~5:00 AM.' },
+    text: 'You need to be at NAIA T1 around 6:00 AM on Jan 3. The Parañaque Airbnb (from Jan 2, near the airport) is booked for 5 guests and the house allows up to 6 overnight. If you two stay there, check the head count with your family and update the guest number on Airbnb so you are covered. Otherwise confirm where you sleep and how you get to T1 at ~5:00 AM.' },
   'back-to-back': { severity: 'tight', title: 'Jan 1–2: two long drives before an early flight',
     text: 'Baguio → Anolid on New Year’s Day (heavy traffic), then Anolid → Manila on Jan 2, then a ~6:00 AM airport arrival on Jan 3. Doable, but it leaves little slack; pack in Baguio or Anolid so Jan 2 is light.' },
   'pickup-72h': { severity: 'tight', title: 'Hotel pickup needs 72 hours’ notice',
-    text: 'You land at BKK 9:10 PM Thai time on Jan 5, so the Centre Point Plus transfer must be arranged by about 9:10 PM Thai time on Jan 2 (10:10 PM Philippine time). Your plan says message them on Jan 2, a travel day. Send it earlier, e.g. Jan 1 or before.' },
+    text: 'You land at BKK 9:10 PM Thai time on Jan 5, so the Centre Point Plus transfer must be arranged by about 9:10 PM Thai time on Jan 2 (10:10 PM Philippine time). Your plan says message them on Jan 2, a travel day. Send it earlier, e.g. Jan 1 or before, and ask the price: Expedia says surcharges may apply. Hotel: +66 2 266 0521.' },
   'tdac': { severity: 'todo', title: 'TDAC falls over New Year in Baguio',
     text: 'The Thailand Digital Arrival Card window is Dec 31 – Jan 3 (official site tdac.immigration.go.th only). Plan to do both cards on Jan 1 evening or Jan 2 rather than during the fireworks.' },
   'not-booked': { severity: 'todo', title: 'Elephant Nature Park and the Opulence cruise are not booked',
@@ -141,7 +141,7 @@ export const FLAGS = {
   'doi-suthep': { severity: 'todo', title: 'Jan 5: 7:00 AM at Doi Suthep',
     text: 'The temple is up the mountain from the Old City, so arrange a Grab or songthaew the night before and allow travel time to arrive by 7:00 AM.' },
   'late-arrival': { severity: 'gap', title: 'Jan 9: 12:10 AM landing, bed not listed',
-    text: 'You land just after midnight and where you sleep Jan 9–10 is TBD. Arrange the ride and the bed before you leave Bangkok. Also do eTravel within 72 hours before arrival (from about Jan 6, 12:10 AM).' },
+    text: 'You land just after midnight and where you sleep Jan 9–10 is TBD. The Parañaque Airbnb (booked for 5, up to 6 overnight) runs until Jan 11, so it may be the answer; confirm the head count and late-night check-in with the host. Also do eTravel within 72 hours before arrival (from about Jan 6, 12:10 AM).' },
   'arrival': { severity: 'gap', title: 'Dec 22 arrival flight not listed',
     text: 'Needed for eTravel (submit within 72 hours before arrival) and for the Dec 22 plans.' },
   'wat-arun-fee': { severity: 'gap', title: 'Wat Arun entry fee not in your notes',
@@ -166,9 +166,10 @@ export const CHECKLIST = [
   { id: 'esim', due: '2026-12-20', when: 'Before Dec 22', text: 'Get a Thailand eSIM or plan to buy a Thai SIM' },
   { id: 'card', due: '2026-12-20', when: 'Before Dec 22', text: 'Have a card with no foreign transaction fees; a universal power adapter; photos or copies of passports and bookings' },
   { id: 'etravel-in', due: '2026-12-19', when: 'Within 72 h before Dec 22 arrival', text: 'eTravel registration for arriving in the Philippines (each of you)', link: 'https://etravel.gov.ph' },
-  { id: 'paranaque-cancel', due: '2026-12-28', when: 'Dec 28, 2:00 PM', text: 'Last day for free cancellation on the Parañaque Airbnb' },
+  { id: 'paranaque-guests', due: '2026-12-15', when: 'Before the trip', text: 'Parañaque Airbnb: confirm who sleeps there (booked for 5, up to 6 allowed) and update the guest count if you two stay Jan 2 or Jan 9–10', flag: 'gap-jan2' },
+  { id: 'paranaque-cancel', due: '2026-12-28', when: 'Dec 28, 2:00 PM', text: 'Last day for free cancellation on the Parañaque Airbnb (partial refund until check-in, Jan 2 at 2:00 PM)' },
   { id: 'chillin-cancel', due: '2026-12-30', when: 'Dec 30, 11:59 PM Thai time', text: "Last day for free cancellation on Chillin' (THB 2,200 fee from Dec 31)" },
-  { id: 'pickup', due: '2027-01-01', when: 'By Jan 1 (deadline ~Jan 2, 9 PM Thai time)', text: 'Message Centre Point Plus to arrange the Jan 5 airport pickup (needs 72 h notice)', flag: 'pickup-72h' },
+  { id: 'pickup', due: '2027-01-01', when: 'By Jan 1 (deadline ~Jan 2, 9 PM Thai time)', text: 'Contact Centre Point Plus (+66 2 266 0521) to arrange the Jan 5 airport pickup and ask the surcharge (needs 72 h notice)', flag: 'pickup-72h' },
   { id: 'tdac-jae', due: '2027-01-01', when: 'Dec 31 – Jan 3 (plan Jan 1–2)', text: 'Thailand Digital Arrival Card: Jae (free, official site only)', link: 'https://tdac.immigration.go.th', flag: 'tdac' },
   { id: 'tdac-jannica', due: '2027-01-01', when: 'Dec 31 – Jan 3 (plan Jan 1–2)', text: 'Thailand Digital Arrival Card: Jannica (free, official site only)', link: 'https://tdac.immigration.go.th', flag: 'tdac' },
   { id: 'tell-chillin', due: '2027-01-02', when: 'Before Jan 3', text: "Tell Chillin' your arrival time (CNX lands 3:20 PM). Phone +66 64 209 9521" },
@@ -196,7 +197,8 @@ export const PACKING = [
 export const PLANNED = [
   { id: 'dagupan', label: 'Cozy Haven Dagupan Airbnb, Dec 23–29 (already paid)', amount: 226.98, currency: 'USD' },
   { id: 'chillin', label: "Chillin' Guest House, 2 nights (pay at property)", amount: 4400, currency: 'THB' },
-  { id: 'silom', label: 'Centre Point Plus Silom, 3 nights (Expedia; check whether prepaid)', amount: 455.28, currency: 'USD' },
+  { id: 'silom', label: 'Centre Point Plus Silom, 3 nights with breakfast (prepaid via Expedia)', amount: 455.28, currency: 'USD' },
+  { id: 'paranaque', label: 'Parañaque Airbnb, Jan 2–11, 5 guests (family stay)', amount: 547.10, currency: 'USD' },
   { id: 'silom-deposit', label: 'Centre Point deposit, THB 1,000 × 3 nights (refundable)', amount: 3000, currency: 'THB', refundable: true },
   { id: 'enp', label: 'Elephant Nature Park, 2 adults × 3,500', amount: 7000, currency: 'THB' },
   { id: 'cruise', label: 'Opulence dinner cruise, 2 adults × 1,800', amount: 3600, currency: 'THB' },
@@ -205,7 +207,7 @@ export const PLANNED = [
   { id: 'ferry', label: 'Ferry to Wat Arun, 2 × ~4', amount: 8, currency: 'THB' },
   { id: 'lounge', label: 'Blue Ribbon lounge, 2 × ~950 (optional add-on)', amount: 1900, currency: 'THB', optional: true },
 ];
-export const BUDGET_NOTES = 'Flights are confirmed but their prices aren’t in your notes, and neither are the Baguio and Parañaque Airbnb costs or the Wat Arun entry fee, so they are not counted. Add them below as expenses.';
+export const BUDGET_NOTES = 'Flights are confirmed but their prices aren’t in your notes, and neither are the Baguio Airbnb cost, the airport pickup surcharge or the Wat Arun entry fee, so they are not counted. Add them below as expenses.';
 
 export const GUIDE = [
   { title: 'Entry & documents (Thailand)', items: ['Passports valid at least 6 months past entry.', 'Carry onward/return flight proof, hotel bookings, and a card or some cash. Immigration can ask.', 'At Don Mueang on Jan 3, go straight to immigration with the TDAC done ahead.', 'Ask at MNL check-in whether bags are tagged through to Chiang Mai. If not, collect and re-check at Terminal 2.'] },
@@ -215,5 +217,5 @@ export const GUIDE = [
   { title: 'What to avoid', items: ['"The Grand Palace is closed today" scam: ignore it and walk to the entrance.', 'Tuk-tuk detours to gem shops and tailors, "50 baht tours", taxis that refuse the meter.', 'Gem shops and "special government promotion" offers.', 'Bird-food and "free" photo stunts that ask for money after.', 'Elephant riding, shows and painting. The waterfall tour’s "elephant cafe" is only a short, optional feeding stop.', 'Vapes and e-cigarettes are illegal. Skip cannabis shops; rules shift.', 'Chiang Mai burning season usually worsens from mid/late January: check the AQI the day before and pack a mask.'] },
   { title: 'Temple rules', items: ['Cover shoulders and knees; no see-through or tight leggings. Bring a light scarf or sarong.', 'Remove shoes before entering buildings.', 'Don’t touch heads, don’t point feet at Buddha images, be respectful around monks.', 'Be respectful of the Thai royal family. Disrespect is a crime.'] },
   { title: 'Peak season', items: ['Baguio Dec 29 – Jan 1: heavy traffic, book dinners ahead, leave early on Jan 1.', 'Chiang Mai and Bangkok are busy late Dec to early Jan: book the cruise and elephant park early; expect long Grand Palace lines.'] },
-  { title: 'Open questions', items: ['Where do Jae and Jannica sleep Dec 22, Jan 2 and Jan 9–10?', 'The Dec 22 arrival flight.', 'Dec 26–28 plans (now based in Dagupan) and Jan 10 plans.', 'Optional: private Sticky Waterfall and Land of Angels tour, Capybara Coffee Chiang Mai. No free day assigned yet.'] },
+  { title: 'Open questions', items: ['Where do Jae and Jannica sleep Dec 22, Jan 2 and Jan 9–10? (The Parañaque Airbnb is booked for 5 and allows 6.)', 'The Dec 22 arrival flight.', 'Dec 26–28 plans (now based in Dagupan) and Jan 10 plans.', 'Optional: private Sticky Waterfall and Land of Angels tour, Capybara Coffee Chiang Mai. No free day assigned yet.'] },
 ];

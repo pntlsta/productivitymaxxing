@@ -128,7 +128,8 @@ Dagupan Airbnb (Cozy Haven) confirmation:     Unit / host:
 Baguio Airbnb confirmation:          Address / host:
 Parañaque Airbnb confirmation:       Unit / host:
 Chillin' Guest House confirmation:
-Centre Point Plus Silom itinerary #:
+Centre Point Plus Silom itinerary #:          Hotel confirmation:
+Expedia Stay Protection Plan policy #:
 `;
 function privateTab(unlocked) {
   const r = rec();
