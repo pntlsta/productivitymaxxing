@@ -9,7 +9,7 @@ export const TRIP = { name: 'Philippines + Thailand', start: '2026-12-19', end: 
 // Flights also carry code + route (+ who) so the Calendar and home screen can show them on the day.
 export const DAYS = [
   { date: '2026-12-19', place: 'Moline → Chicago', items: [
-    { time: '4:58 PM', kind: 'flight', code: 'AA 3500', route: 'MLI → ORD', who: 'Jae + Janelle', text: 'AA 3500 (American Eagle / Envoy), Moline (MLI) → Chicago O’Hare (ORD) Terminal 3, lands 6:14 PM', flags: ['ticket-not-issued'] },
+    { time: '4:58 PM', kind: 'flight', code: 'AA 3500', route: 'MLI → ORD', who: 'Jae + Janelle', text: 'AA 3500 (American Eagle / Envoy), Moline (MLI) → Chicago O’Hare (ORD) Terminal 3, lands 6:14 PM' },
     { time: 'Night', kind: 'stay', text: 'Check in: Hyatt Place Chicago/O’Hare Airport, 6810 Mannheim Rd, Rosemont, IL (Expedia). Check-in from 3:00 PM. Pay $192.63 at the hotel' },
     { time: '', kind: 'note', text: 'eTravel window for the Dec 22 arrival is open (within 72 hours). Submit before you fly', flags: [] },
   ] },
@@ -144,8 +144,6 @@ export const DAYS = [
 
 // severity: conflict (two things can't both happen) | tight | gap (missing info) | todo
 export const FLAGS = {
-  'ticket-not-issued': { severity: 'conflict', title: 'AA 3500 (Dec 19) shows "Ticket not issued"',
-    text: 'In the flight details on Cathay Pacific’s site, the Moline → Chicago flight says "Ticket not issued" (the trip list and the seats say "Confirmed", but those are the reservation and seat status, not the ticket). Without an issued ticket you can be refused at check-in. Check that your e-ticket receipt lists AA 3500 for both of you; if not, or if unsure, call Cathay Pacific (who sold the trip) and ask them to revalidate or reissue that segment.' },
   'dec20-transfer': { severity: 'todo', title: 'Dec 20: hotel checkout and O’Hare Terminal 5 back to back',
     text: 'Checkout is 11:00 AM and you want to be at Terminal 5 around 11:10 AM for the 2:10 PM flight. You arrive on Dec 19 at Terminal 3 but leave from Terminal 5, so ask the hotel how to get to Terminal 5 (shuttle or ride) when you check in, and leave the hotel a bit before checkout.' },
   'hkg-connection': { severity: 'tight', title: 'Dec 21: about 2 hours to connect in Hong Kong',
@@ -196,7 +194,6 @@ export const FLAGS = {
 export const CHECKLIST = [
   { id: 'book-enp', due: '2026-11-20', when: 'ASAP', text: 'Book Elephant Nature Park for Jan 4 (3,500 THB per adult)', link: 'https://www.elephantnaturepark.org/book-now', flag: 'not-booked' },
   { id: 'book-cruise', due: '2026-11-20', when: 'ASAP', text: 'Book the Opulence dinner cruise on GetYourGuide (1,800 THB per adult). Decide the Jan 7 food-crawl clash first', flag: 'jan7-conflict' },
-  { id: 'aa3500-ticket', due: '2026-11-20', when: 'ASAP', text: 'Call Cathay Pacific: AA 3500 (Moline → Chicago, Dec 19) says "Ticket not issued". Get it ticketed for both of you', flag: 'ticket-not-issued' },
   { id: 'passports', due: '2026-11-20', when: 'ASAP', text: 'Check passports are valid at least 6 months past entry (past Jul 3, 2027 for Thailand)' },
   { id: 'chicago-transfer', due: '2026-12-19', when: 'Dec 19 at check-in', text: 'Ask Hyatt Place O’Hare how to get to Terminal 5 on Dec 20 (checkout 11:00 AM, flight 2:10 PM)', flag: 'dec20-transfer' },
   { id: 'hk-hotel', due: '2026-12-15', when: 'Before the trip', text: 'Book a Hong Kong hotel for Jan 10, check HK entry rules for each passport, and ask Cathay whether bags go through to Dallas', flag: 'hkg-overnight' },
