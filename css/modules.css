@@ -140,3 +140,5 @@
 .trip .card + .card { margin-top: var(--space-4); }
 @media (max-width: 640px) { .slot { grid-template-columns: 5rem 1rem 1fr; } }
 @media print { .no-print { display: none !important; } .day-card, .card { box-shadow: none; } }
+.budget-table .status-why { display: block; margin-top: 2px; max-width: 22rem; }
+.budget-table tfoot td { font-weight: 600; }

@@ -21,7 +21,7 @@ function patch(p) {
 }
 const weekday = (iso) => parseISO(iso).toLocaleDateString('en-US', { weekday: 'short' });
 const daysUntil = (iso) => Math.round((parseISO(iso) - parseISO(today())) / 86400000);
-const money = (n, c) => `${c === 'USD' ? '$' : c === 'PHP' ? '₱' : ''}${Number(n).toLocaleString(undefined, { maximumFractionDigits: 2 })}${c === 'THB' ? ' THB' : ''}`;
+const money = (n, c) => { const v = Number(n); const cents = !Number.isInteger(v) ? 2 : 0; return `${c === 'USD' ? '$' : c === 'PHP' ? '₱' : ''}${v.toLocaleString(undefined, { minimumFractionDigits: cents, maximumFractionDigits: 2 })}${c === 'THB' ? ' THB' : ''}`; };
 const flagChip = (id) => { const f = FLAGS[id]; if (!f) return ''; const [l, c] = SEV[f.severity]; return `<a href="#/trip/itinerary" class="badge ${c} flag-chip" data-flag="${id}" title="${esc(f.title)}">${l}</a>`; };
 
 export function tripStatus() {
@@ -82,17 +82,28 @@ function packing() {
 
 function budget() {
   const r = rec(); const rates = r.rates || {};
-  const planned = PLANNED.map(p => ({ ...p, paid: !!r.paid[p.id] }));
+  // A ticked/unticked box overrides the status from the documents.
+  const planned = PLANNED.map(p => ({ ...p, paid: r.paid[p.id] ?? (p.status === 'paid') }));
+  const STATUS = (p) => p.paid ? '<span class="badge success">Paid</span>' : p.status === 'check' ? '<span class="badge warning">Check</span>' : '<span class="badge danger">Not paid</span>';
   const sum = (list, f) => CUR.reduce((m, c) => (m[c] = list.filter(x => x.currency === c && f(x)).reduce((s, x) => s + Number(x.amount || 0), 0), m), {});
-  const plannedTot = sum(planned, p => !p.optional && !p.refundable), spentTot = sum(r.expenses || [], () => true);
+  const counted = (p) => !p.optional && !p.refundable;
+  const paidTot = sum(planned, p => counted(p) && p.paid), dueTot = sum(planned, p => counted(p) && !p.paid && p.status !== 'check');
+  const checkTot = sum(planned, p => counted(p) && !p.paid && p.status === 'check'), depositTot = sum(planned, p => p.refundable && !p.paid);
+  const spentTot = sum(r.expenses || [], () => true);
   const toPHP = (tot) => (tot.THB && !rates.THB) || (tot.USD && !rates.USD) ? null : tot.PHP + tot.THB * (rates.THB || 0) + tot.USD * (rates.USD || 0);
   const totRow = (tot) => CUR.filter(c => tot[c]).map(c => money(tot[c], c)).join(' + ') || '0';
   const php = (tot) => { const v = toPHP(tot); return v == null ? '<span class="muted small">enter rates to combine</span>' : `≈ ${money(v, 'PHP')}`; };
   return `<section class="card"><h2>Planned costs</h2><p class="muted small">${esc(BUDGET_NOTES)}</p>
-    <table class="table"><thead><tr><th>Item</th><th class="num">Amount</th><th class="num">Paid</th></tr></thead><tbody>
-    ${planned.map(p => `<tr class="${p.optional ? 'muted' : ''}"><td>${esc(p.label)}${p.optional ? ' <span class="badge">Optional</span>' : ''}${p.refundable ? ' <span class="badge">Refundable</span>' : ''}</td><td class="num">${money(p.amount, p.currency)}</td>
+    <table class="table budget-table"><thead><tr><th>Item</th><th>Status</th><th class="num">Amount</th><th class="num">Paid</th></tr></thead><tbody>
+    ${planned.map(p => `<tr class="${p.optional ? 'muted' : ''}"><td>${esc(p.label)}${p.optional ? ' <span class="badge">Optional</span>' : ''}${p.refundable ? ' <span class="badge">Refundable</span>' : ''}</td>
+      <td>${STATUS(p)}<span class="status-why small muted">${esc(p.paid ? (p.status === 'paid' ? p.why : 'Marked paid') : (p.when || p.why || ''))}</span></td><td class="num">${money(p.amount, p.currency)}</td>
       <td class="num"><input type="checkbox" data-paid="${p.id}" ${p.paid ? 'checked' : ''} aria-label="Paid: ${esc(p.label)}"></td></tr>`).join('')}</tbody>
-    <tfoot><tr><td>Planned total (excl. optional and refundable)</td><td class="num" colspan="2">${totRow(plannedTot)} ${php(plannedTot)}</td></tr></tfoot></table></section>
+    <tfoot>
+      <tr><td colspan="2">Already paid</td><td class="num" colspan="2">${totRow(paidTot)} ${php(paidTot)}</td></tr>
+      <tr><td colspan="2">Still to pay</td><td class="num" colspan="2">${totRow(dueTot)} ${php(dueTot)}</td></tr>
+      ${CUR.some(c => checkTot[c]) ? `<tr><td colspan="2">Unclear: check payment status</td><td class="num" colspan="2">${totRow(checkTot)} ${php(checkTot)}</td></tr>` : ''}
+      ${CUR.some(c => depositTot[c]) ? `<tr><td colspan="2">Refundable deposits held at check-in</td><td class="num" colspan="2">${totRow(depositTot)}</td></tr>` : ''}
+    </tfoot></table></section>
     <section class="card"><h2>Spending</h2>
       <form class="row" id="add-exp">
         <div class="field"><label for="ex-date">Date</label><input class="input" type="date" id="ex-date" value="${today()}" required></div>

@@ -194,20 +194,21 @@ export const PACKING = [
 ];
 
 // Planned costs from the notes only. currency: THB | USD | PHP. optional: not counted by default.
+// status: paid | due (must still be paid; `when` says when/where) | check (unclear from documents)
 export const PLANNED = [
-  { id: 'dagupan', label: 'Cozy Haven Dagupan Airbnb, Dec 23–29 (already paid)', amount: 226.98, currency: 'USD' },
-  { id: 'chillin', label: "Chillin' Guest House, 2 nights (pay at property)", amount: 4400, currency: 'THB' },
-  { id: 'silom', label: 'Centre Point Plus Silom, 3 nights with breakfast (prepaid via Expedia)', amount: 455.28, currency: 'USD' },
-  { id: 'paranaque', label: 'Parañaque Airbnb, Jan 2–11, 5 guests (family stay)', amount: 547.10, currency: 'USD' },
-  { id: 'silom-deposit', label: 'Centre Point deposit, THB 1,000 × 3 nights (refundable)', amount: 3000, currency: 'THB', refundable: true },
-  { id: 'enp', label: 'Elephant Nature Park, 2 adults × 3,500', amount: 7000, currency: 'THB' },
-  { id: 'cruise', label: 'Opulence dinner cruise, 2 adults × 1,800', amount: 3600, currency: 'THB' },
-  { id: 'palace', label: 'Grand Palace, 2 × 500', amount: 1000, currency: 'THB' },
-  { id: 'wat-pho', label: 'Wat Pho, 2 × 200', amount: 400, currency: 'THB' },
-  { id: 'ferry', label: 'Ferry to Wat Arun, 2 × ~4', amount: 8, currency: 'THB' },
-  { id: 'lounge', label: 'Blue Ribbon lounge, 2 × ~950 (optional add-on)', amount: 1900, currency: 'THB', optional: true },
+  { id: 'dagupan', label: 'Cozy Haven Dagupan Airbnb, Dec 23–29', amount: 226.98, currency: 'USD', status: 'paid', why: 'Airbnb shows "Amount paid $226.98"' },
+  { id: 'silom', label: 'Centre Point Plus Silom, 3 nights with breakfast', amount: 455.28, currency: 'USD', status: 'paid', why: 'Expedia: "Collected by Expedia, Total $455.28"' },
+  { id: 'paranaque', label: 'Parañaque Airbnb, Jan 2–11, 5 guests (family stay)', amount: 547.10, currency: 'USD', status: 'check', why: 'Airbnb shows "Total cost" with "Manage payment", not "Amount paid". Usually a payment plan with a balance due. Check Airbnb → Trips → Manage payment' },
+  { id: 'chillin', label: "Chillin' Guest House, 2 nights", amount: 4400, currency: 'THB', status: 'due', when: 'At check-in, Jan 3 (card + photo ID)' },
+  { id: 'silom-deposit', label: 'Centre Point deposit, THB 1,000 × 3 nights', amount: 3000, currency: 'THB', refundable: true, status: 'due', when: 'At check-in, Jan 5 (refundable)' },
+  { id: 'enp', label: 'Elephant Nature Park, 2 adults × 3,500', amount: 7000, currency: 'THB', status: 'due', when: 'When you book (not booked yet)' },
+  { id: 'cruise', label: 'Opulence dinner cruise, 2 adults × 1,800', amount: 3600, currency: 'THB', status: 'due', when: 'When you book (not booked yet)' },
+  { id: 'palace', label: 'Grand Palace, 2 × 500', amount: 1000, currency: 'THB', status: 'due', when: 'At the entrance, Jan 6' },
+  { id: 'wat-pho', label: 'Wat Pho, 2 × 200', amount: 400, currency: 'THB', status: 'due', when: 'At the entrance, Jan 6' },
+  { id: 'ferry', label: 'Ferry to Wat Arun, 2 × ~4', amount: 8, currency: 'THB', status: 'due', when: 'On the day, Jan 6 (coins)' },
+  { id: 'lounge', label: 'Blue Ribbon lounge, 2 × ~950 (optional add-on)', amount: 1900, currency: 'THB', optional: true, status: 'due', when: 'Only if you add it' },
 ];
-export const BUDGET_NOTES = 'Flights are confirmed but their prices aren’t in your notes, and neither are the Baguio Airbnb cost, the airport pickup surcharge or the Wat Arun entry fee, so they are not counted. Add them below as expenses.';
+export const BUDGET_NOTES = 'Status comes from your booking documents; tick Paid when something changes. Not counted because the price isn’t in your notes: the three flights (confirmed, normally paid at booking), the Baguio Airbnb (payment status unknown), the airport pickup surcharge and the Wat Arun entry fee. Add them below as expenses.';
 
 export const GUIDE = [
   { title: 'Entry & documents (Thailand)', items: ['Passports valid at least 6 months past entry.', 'Carry onward/return flight proof, hotel bookings, and a card or some cash. Immigration can ask.', 'At Don Mueang on Jan 3, go straight to immigration with the TDAC done ahead.', 'Ask at MNL check-in whether bags are tagged through to Chiang Mai. If not, collect and re-check at Terminal 2.'] },
