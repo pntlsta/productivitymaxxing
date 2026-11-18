@@ -14,6 +14,7 @@ const LOADERS = {
   notes: () => import('./notes/notes.js'),
   library: () => import('./library/library.js'),
   trip: () => import('./trip/trip.js'),
+  jcanvas: () => import('./jcanvas/jcanvas.js'),
 };
 
 let current = null; // { id, mod, ctx }

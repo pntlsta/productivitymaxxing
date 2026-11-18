@@ -26,6 +26,18 @@ Then open http://localhost:8000. ES modules don't load from `file://`, so you ne
 
 > The token is stored in this browser's localStorage. Anyone with access to the machine or browser profile can read it. Only use it with a private repo you own.
 
+## [JCanvas]
+
+A Canvas-style course workspace that uses the same courses as the Calendar.
+
+- **Dashboard:** a card for each course. Inside a course you get Canvas-style navigation: Modules, Assignments, Quizzes, Discussions, Pages, Files.
+- **Modules:** collapse and expand, publish toggles, **+** to add items, and **⋯** (or right-click) for edit, indent, move, duplicate and delete. Drag items by their grip to reorder them or move them between modules, and drag module headers to reorder modules. Alt+→ / Alt+← indents the focused item.
+- **Add Item:** Assignment, Quiz, File, Page, Discussion, Text Header, External URL or External Tool. Like Canvas, you can pick an existing item or choose "[ Create … ]".
+- **Assignments, quizzes and discussions are the same records as Calendar items,** so their due dates show on the Calendar. Pages, headers, links and files stay in JCanvas.
+- **Item editor:** points, Due, Available from and Until (date and time), published, and an **HTML editor** with Preview plus quick-insert buttons (headings, lists, tables, a callout box, images, YouTube embeds).
+- **HTML handling:** inline styles, tables and https embeds are kept, while scripts and event handlers are stripped. Content over about 50,000 characters won't save, because of GitHub's issue size limit.
+- **Files** are stored in this browser only; their names sync, but the files themselves don't.
+
 ## Books you can open anywhere (the `books/` folder)
 
 Put `.epub` files in this repo's `books/` folder and they show up in the Library on every device that opens your GitHub Pages site:

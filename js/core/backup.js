@@ -6,10 +6,10 @@ import { isoDate } from './util.js';
 export const FORMAT = 'workbench-backup';
 const REQUIRED = {
   course: ['code', 'name'], item: ['courseId', 'name'], notebook: ['name'], note: ['notebookId'],
-  announcement: ['date', 'title'], punch: ['date'], page: ['title'], book: ['title'], bookmark: ['bookId', 'cfi'], annotation: ['bookId', 'cfiRange'], trip: ['name'],
+  announcement: ['date', 'title'], punch: ['date'], page: ['title'], book: ['title'], bookmark: ['bookId', 'cfi'], annotation: ['bookId', 'cfiRange'], trip: ['name'], module: ['courseId', 'name'],
 };
 // Parents first, so references can be remapped onto records that already exist.
-const ORDER = ['course', 'item', 'notebook', 'note', 'announcement', 'punch', 'page', 'book', 'bookmark', 'annotation', 'trip'];
+const ORDER = ['course', 'module', 'item', 'notebook', 'note', 'announcement', 'punch', 'page', 'book', 'bookmark', 'annotation', 'trip'];
 const lc = (s) => String(s ?? '').trim().toLowerCase();
 
 export function exportAll() {
@@ -37,7 +37,8 @@ export function importData(data, { dryRun = false } = {}) {
       if (!raw || typeof raw !== 'object' || !raw.id || REQUIRED[type].some(k => raw[k] == null || raw[k] === '')) { stats.invalid++; continue; }
       const r = { ...raw };
       // references
-      if (type === 'item') r.courseId = remap.course[r.courseId] || r.courseId;
+      if (type === 'item' || type === 'module') r.courseId = remap.course[r.courseId] || r.courseId;
+      if (type === 'item' && r.moduleId) r.moduleId = remap.module[r.moduleId] || r.moduleId;
       if (type === 'note') r.notebookId = remap.notebook[r.notebookId] || r.notebookId;
       if (type === 'page' && r.parentId) r.parentId = remap.page[r.parentId] || r.parentId;
       if (type === 'bookmark' || type === 'annotation') r.bookId = remap.book[r.bookId] || r.bookId;
@@ -59,6 +60,7 @@ function naturalKey(type, r) {
   switch (type) {
     case 'course': return lc(r.code);
     case 'item': return `${r.courseId}|${lc(r.name)}`;
+    case 'module': return `${r.courseId}|${lc(r.name)}`;
     case 'notebook': return lc(r.name);
     case 'note': return `${r.notebookId}|${lc(r.title)}|${(r.content || '').length}`;
     case 'announcement': return `${r.date}|${lc(r.title)}`;

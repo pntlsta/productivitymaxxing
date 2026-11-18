@@ -12,6 +12,7 @@ export const MODULES = [
   { id: 'notes', title: 'Notes', icon: 'notes', desc: 'Workspace' },
   { id: 'library', title: 'Library', icon: 'library', desc: 'Ebook reader' },
   { id: 'trip', title: 'Trip', icon: 'plane', desc: 'Philippines + Thailand' },
+  { id: 'jcanvas', title: '[JCanvas]', icon: 'jcanvas', desc: 'Course modules and pages' },
 ];
 
 const sidebar = () => $('#sidebar');

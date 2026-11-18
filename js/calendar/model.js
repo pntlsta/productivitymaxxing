@@ -5,6 +5,9 @@ import { formDialog, confirmDialog, toast } from '../core/ui.js';
 import { icon } from '../core/icons.js';
 
 export const ITEM_TYPES = ['Project', 'Assignment', 'Discussion', 'Quiz', 'Not Graded'];
+/** Content-only module item types used by JCanvas; they never show on the Calendar. */
+export const CONTENT_TYPES = ['Page', 'File', 'Text Header', 'External URL', 'External Tool'];
+export const isGraded = (it) => ITEM_TYPES.includes(it.type);
 export const COURSE_COLORS = ['#3b6fd8', '#d0482f', '#2e9b5b', '#a14bc4', '#d18a12', '#1c9aa8', '#c2407c', '#6b7280'];
 export const CODE_RE = /^[A-Z]{3}-\d{3}$/;
 
@@ -17,7 +20,8 @@ export const compactCode = (code) => code.replace('-', '').toLowerCase();
 export const courses = () => store.all('course').sort((a, b) => a.code.localeCompare(b.code));
 export const courseByCode = (code) => { const c = normCode(code); return c ? store.find('course', x => x.code === c) : null; };
 export const course = (id) => store.get('course', id);
-export const itemsOf = (courseId) => store.where('item', i => i.courseId === courseId);
+export const itemsOf = (courseId) => store.where('item', i => i.courseId === courseId && isGraded(i));
+export const allItemsOf = (courseId) => store.where('item', i => i.courseId === courseId);
 export const isOverdue = (it) => !it.completed && !!it.dueDate && it.dueDate < today();
 export const typeKey = (t) => t.toLowerCase().replace(/[^a-z]/g, '');
 export function matchType(s) {
@@ -72,7 +76,8 @@ export async function courseDialog(existing = null) {
 }
 
 export async function deleteCourse(c) {
-  const items = itemsOf(c.id);
+  const items = allItemsOf(c.id);
+  const mods = store.where('module', m => m.courseId === c.id);
   const ok = await confirmDialog({
     title: `Delete ${c.code}?`,
     message: `This deletes the course "${c.name}"${items.length ? ` and its ${items.length} item${items.length === 1 ? '' : 's'}` : ''}. Deleted records can be restored from Settings.`,
@@ -80,6 +85,7 @@ export async function deleteCourse(c) {
   });
   if (!ok) return false;
   items.forEach(i => store.remove('item', i.id));
+  mods.forEach(m => store.remove('module', m.id));
   store.remove('course', c.id);
   toast(`${c.code} deleted (queued).`);
   return true;

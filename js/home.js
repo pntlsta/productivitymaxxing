@@ -18,10 +18,11 @@ function status(id) {
     case 'notes': return plural(store.all('page').length, 'page');
     case 'library': return plural(store.all('book').length, 'book');
     case 'trip': return tripStatus();
+    case 'jcanvas': { const n = store.all('module').length; return `${plural(store.all('course').length, 'course')} · ${plural(n, 'module')}`; }
   }
   return '';
 }
-const TYPES_FOR = { calendar: 'item', timeclock: 'punch', notes: 'page', library: 'book', trip: 'trip' };
+const TYPES_FOR = { calendar: 'item', timeclock: 'punch', notes: 'page', library: 'book', trip: 'trip', jcanvas: 'module' };
 
 export default {
   mount(main, ctx) {

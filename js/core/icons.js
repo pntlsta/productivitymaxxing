@@ -38,6 +38,17 @@ const P = {
   more: '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
   megaphone: '<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/>',
   plane: '<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
+  jcanvas: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="6.5" r="1.3"/><circle cx="12" cy="17.5" r="1.3"/><circle cx="6.5" cy="12" r="1.3"/><circle cx="17.5" cy="12" r="1.3"/>',
+  assignment: '<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/>',
+  quiz: '<path d="M5 19l4-1L19 8l-3-3L6 15z"/><path d="M14 7l3 3M5 19l1-4"/>',
+  discussion: '<path d="M4 5h11v8H8l-4 3z"/><path d="M15 9h5v8l-3-2h-6v-2"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  file: '<path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4"/>',
+  tool: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-2.5z"/>',
+  publish: '<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',
+  unpublish: '<circle cx="12" cy="12" r="9"/><path d="M5.6 18.4L18.4 5.6"/>',
+  caretD: '<path d="M7 10l5 5 5-5z" fill="currentColor"/>',
+  caretR: '<path d="M10 7l5 5-5 5z" fill="currentColor"/>',
   page: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/>',
 };
 

@@ -4,7 +4,7 @@ import * as store from '../core/store.js';
 import { esc, isoDate, addDays, startOfWeek, weekRange, fmtLong, fmtShort, monthName, lsGet, lsSet, today, plural } from '../core/util.js';
 import { icon } from '../core/icons.js';
 import { openDialog, emptyState, skeletonRows } from '../core/ui.js';
-import { courses, course, itemRow, bindItemRows, sortItems, itemDialog, courseDialog } from './model.js';
+import { isGraded, courses, course, itemRow, bindItemRows, sortItems, itemDialog, courseDialog } from './model.js';
 import { mountCommandBar } from './commands.js';
 import { flightsOn } from '../trip/trip.js';
 
@@ -13,7 +13,7 @@ export const view = Object.assign({ month: isoDate(new Date()).slice(0, 7), avai
 export const saveView = () => lsSet(KEY, view);
 
 function filtered() {
-  return store.all('item').filter(i =>
+  return store.all('item').filter(i => isGraded(i) &&
     (view.course === 'all' || i.courseId === view.course) &&
     (view.status === 'all' || (view.status === 'done') === !!i.completed));
 }

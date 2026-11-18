@@ -1,13 +1,13 @@
 // Minimal IndexedDB key/value wrapper. Binary files (epubs, covers, images) and search
 // indexes live here, never in GitHub issues.
 const DB_NAME = 'workbench';
-const STORES = ['books', 'covers', 'images', 'search', 'locations'];
+const STORES = ['books', 'covers', 'images', 'search', 'locations', 'files'];
 let dbp;
 
 function open() {
   if (!dbp) {
     dbp = new Promise((resolve, reject) => {
-      const req = indexedDB.open(DB_NAME, 1);
+      const req = indexedDB.open(DB_NAME, 2);
       req.onupgradeneeded = () => { STORES.forEach(s => { if (!req.result.objectStoreNames.contains(s)) req.result.createObjectStore(s); }); };
       req.onsuccess = () => resolve(req.result);
       req.onerror = () => { dbp = null; reject(req.error); };

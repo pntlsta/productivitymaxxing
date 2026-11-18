@@ -8,7 +8,7 @@
 import { uuid, lsGet, lsSet } from './util.js';
 import * as gh from './github.js';
 
-export const TYPES = ['course', 'item', 'note', 'notebook', 'announcement', 'punch', 'page', 'book', 'bookmark', 'annotation', 'trip'];
+export const TYPES = ['course', 'item', 'note', 'notebook', 'announcement', 'punch', 'page', 'book', 'bookmark', 'annotation', 'trip', 'module'];
 export const MAX_BODY = 65000;
 
 const tables = Object.fromEntries(TYPES.map(t => [t, new Map()]));   // live records
@@ -38,6 +38,7 @@ const TITLES = {
   bookmark: r => `${tables.book.get(r.bookId)?.title || 'book'}: ${r.chapter || r.cfi}`,
   annotation: r => `${tables.book.get(r.bookId)?.title || 'book'}: ${r.text || ''}`,
   trip: r => r.name || 'Trip',
+  module: r => `${tables.course.get(r.courseId)?.code || '???'} module: ${r.name}`,
 };
 export function issueTitle(type, r) { return `${type}: ${short(TITLES[type]?.(r) ?? r.id)}`; }
 export function issueBody(r) { return '```json\n' + JSON.stringify(r, null, 1) + '\n```\n'; }
